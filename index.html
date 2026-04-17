@@ -1,0 +1,341 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#111820;--bg3:#161e28;
+  --surface:#1a2332;--surface2:#1f2a3c;
+  --border:#1e2d42;--border2:#243350;
+  --accent:#3b9eff;--accent2:#1a6fcc;
+  --accent-dim:rgba(59,158,255,0.12);--accent-glow:rgba(59,158,255,0.06);
+  --green:#00d97e;--green-dim:rgba(0,217,126,0.10);
+  --yellow:#f0b429;--yellow-dim:rgba(240,180,41,0.10);
+  --red:#ff4560;--red-dim:rgba(255,69,96,0.10);
+  --text:#e2e8f0;--text2:#7a8fa8;--text3:#3d5068;
+  --radius:10px;--radius-sm:6px;
+}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.app{background:var(--bg);min-height:400px;padding:1.5rem;font-family:-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+
+.tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:1.5rem}
+.tab{flex:1;padding:8px 0;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);border-radius:var(--radius-sm);transition:all 0.15s;letter-spacing:0.02em}
+.tab.active{background:var(--surface2);color:var(--accent);border:1px solid var(--border2)}
+.pane{display:none}.pane.active{display:block}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem}
+.card-title{font-size:10px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:0.12em;margin:0 0 1rem;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--text2);font-weight:400;letter-spacing:0.03em}
+.field input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.15s}
+.field input:focus{border-color:var(--accent)}
+.hint{font-size:10px;color:var(--text3);margin-top:2px}
+
+.metric{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px}
+.metric .ml{font-size:10px;color:var(--text2);margin:0 0 6px;text-transform:uppercase;letter-spacing:0.08em}
+.metric .mv{font-size:19px;font-weight:600;color:var(--text);margin:0;letter-spacing:-0.01em}
+.metric .ms{font-size:10px;color:var(--text3);margin:4px 0 0}
+.metric.good .mv{color:var(--green)}
+.metric.warn .mv{color:var(--yellow)}
+.metric.bad .mv{color:var(--red)}
+
+.divider{height:1px;background:var(--border);margin:1rem 0}
+
+.bd{font-size:13px;width:100%;border-collapse:collapse}
+.bd td{padding:6px 0;border-bottom:1px solid var(--border)}
+.bd tr:last-child td{border-bottom:none}
+.bd .lbl{color:var(--text2)}
+.bd .amt{text-align:right;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums}
+.bd .tr td{font-weight:600;border-top:1px solid var(--border2);border-bottom:none;padding-top:10px;color:var(--text)}
+.bd .tx td{color:var(--text3);font-size:12px}
+.bd .sub td{color:var(--text3);font-size:11px}
+.bd .cat td{font-size:10px;color:var(--accent);padding-top:12px;padding-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;border-bottom:none}
+
+.bar-track{height:5px;background:var(--surface);border-radius:999px;overflow:hidden;margin:10px 0 5px;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:999px;transition:width 0.4s,background 0.4s}
+.bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+
+.preset-btn{font-size:11px;padding:5px 12px;cursor:pointer;background:var(--accent-dim);border:1px solid var(--accent2);color:var(--accent);border-radius:var(--radius-sm);margin-bottom:12px;letter-spacing:0.02em;transition:background 0.15s}
+.preset-btn:hover{background:rgba(59,158,255,0.2)}
+
+.info-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 10px;font-size:12px;color:var(--text2)}
+.chip strong{color:var(--accent);font-weight:500}
+
+.toggle-row{display:flex;align-items:center;gap:8px}
+.toggle-row label{font-size:13px;color:var(--text2);cursor:pointer}
+input[type=checkbox]{accent-color:var(--accent);width:auto}
+
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.04em}
+.badge-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,217,126,0.25)}
+.badge-yellow{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(240,180,41,0.25)}
+.badge-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,69,96,0.25)}
+</style>
+
+<h2 class="sr-only">Lönekalkylator och budgetöversikt</h2>
+
+<div class="app">
+<div class="tabs">
+  <button class="tab active" onclick="showTab('lon')">Lönekalkyl</button>
+  <button class="tab" onclick="showTab('budget')">Budgetöversikt</button>
+</div>
+
+<div id="pane-lon" class="pane active">
+
+  <div class="card">
+    <p class="card-title">Grundlön</p>
+    <div class="g2">
+      <div class="field"><label>Månadslön (kr)</label><input type="number" id="grundlon" value="52000" min="0" step="100"></div>
+      <div class="field"><label>Bonus (% av årsgrundlön)</label><input type="number" id="bonus_pct" value="0" min="0" step="0.5"><p class="hint">Beskattas som ackumulerad inkomst</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Rikskort förmån</p>
+    <div class="toggle-row" style="margin-bottom:10px">
+      <input type="checkbox" id="rikskort" checked>
+      <label for="rikskort">Aktiv denna månad</label>
+    </div>
+    <div class="info-chips">
+      <span class="chip">Löneavdrag <strong>−958 kr</strong></span>
+      <span class="chip">Förmånsvärde (beskattas) <strong>+1 142 kr</strong></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Beredskap</p>
+    <button class="preset-btn" onclick="setPreset()">Normal beredskapsvecka — 67h vardag + 61h helg</button>
+    <div class="g2">
+      <div class="field"><label>Vardag (timmar)</label><input type="number" id="b_vardag" value="0" min="0" step="0.5"><p class="hint">Divisor 1325</p></div>
+      <div class="field"><label>Helg (timmar)</label><input type="number" id="b_helg" value="0" min="0" step="0.5"><p class="hint">Divisor 600</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Övertid</p>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="field"><label>Vardag</label><input type="number" id="ot_vardag" value="0" min="0" step="0.5"><p class="hint">Divisor 95</p></div>
+      <div class="field"><label>Vardag kväll (efter 18)</label><input type="number" id="ot_kvall" value="0" min="0" step="0.5"><p class="hint">Divisor 85</p></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Helg</label><input type="number" id="ot_helg" value="0" min="0" step="0.5"><p class="hint">Divisor 70</p></div>
+      <div class="field"><label>Storhelg / röd dag</label><input type="number" id="ot_storhelg" value="0" min="0" step="0.5"><p class="hint">Divisor 48</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Resultat</p>
+    <div class="g3" style="margin-bottom:1rem">
+      <div class="metric"><p class="ml">Brutto utbetalt</p><p class="mv" id="res_brutto">—</p><p class="ms">inkl. bonus</p></div>
+      <div class="metric"><p class="ml">Total skatt</p><p class="mv" id="res_skatt">—</p><p class="ms" id="res_skattsats">—</p></div>
+      <div class="metric"><p class="ml">Nettolön</p><p class="mv" id="res_netto">—</p><p class="ms">att ta hem</p></div>
+    </div>
+    <div class="divider"></div>
+    <table class="bd">
+      <tr><td class="lbl">Grundlön</td><td class="amt" id="b_grundlon">—</td></tr>
+      <tr><td class="lbl">Beredskap vardag</td><td class="amt" id="b_bv">—</td></tr>
+      <tr><td class="lbl">Beredskap helg</td><td class="amt" id="b_bh">—</td></tr>
+      <tr><td class="lbl">Övertid vardag</td><td class="amt" id="b_otv">—</td></tr>
+      <tr><td class="lbl">Övertid kväll</td><td class="amt" id="b_otk">—</td></tr>
+      <tr><td class="lbl">Övertid helg</td><td class="amt" id="b_oth">—</td></tr>
+      <tr><td class="lbl">Övertid storhelg</td><td class="amt" id="b_ots">—</td></tr>
+      <tr id="rk_avdrag_row"><td class="lbl">Rikskort löneavdrag</td><td class="amt" id="b_rk_avdrag">—</td></tr>
+      <tr class="tr"><td class="lbl">Månadsbrutto (ex. bonus)</td><td class="amt" id="b_manad_brutto">—</td></tr>
+      <tr class="sub" id="rk_forman_row"><td class="lbl" style="padding-left:12px">+ rikskort förmånsvärde</td><td class="amt" id="b_rk_forman">—</td></tr>
+      <tr class="tx"><td class="lbl">Kommunalskatt 32,39 %</td><td class="amt" id="b_kommunskatt">—</td></tr>
+      <tr class="tx"><td class="lbl" id="b_statlbl">Statlig skatt</td><td class="amt" id="b_statskatt">—</td></tr>
+      <tr class="tx"><td class="lbl">Jobbskatteavdrag</td><td class="amt" id="b_jsa">—</td></tr>
+      <tr id="bb1" style="display:none"><td class="lbl" style="padding-top:12px;border-top:1px solid var(--border)">Bonus (engångsbelopp)</td><td class="amt" id="b_bonus_belopp" style="padding-top:12px;border-top:1px solid var(--border)">—</td></tr>
+      <tr id="bb2" class="tx" style="display:none"><td class="lbl">Skatt på bonus (ackumulerad)</td><td class="amt" id="b_bonus_skatt">—</td></tr>
+      <tr id="bb3" class="sub" style="display:none"><td class="lbl" style="padding-left:12px">Marginalskattesats på bonus</td><td class="amt" id="b_bonus_rate">—</td></tr>
+      <tr class="tr"><td class="lbl">Netto att ta hem</td><td class="amt" id="b_netto_lon" style="color:var(--green)">—</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<div id="pane-budget" class="pane">
+
+  <div class="card">
+    <p class="card-title">Månadsöversikt</p>
+    <div class="g3" style="margin-bottom:1rem">
+      <div class="metric"><p class="ml">Nettolön</p><p class="mv" id="bud_netto_in">—</p><p class="ms">från lönekalkyl</p></div>
+      <div class="metric"><p class="ml">Totala utgifter</p><p class="mv" id="bud_utgifter">—</p><p class="ms">alla poster</p></div>
+      <div class="metric" id="bud_kvar_card"><p class="ml">Kvar att disponera</p><p class="mv" id="bud_kvar">—</p><p class="ms" id="bud_kvar_pct">—</p></div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="bud_bar" style="width:0%;background:var(--green)"></div></div>
+    <div class="bar-labels"><span>0 kr</span><span id="bud_bar_label">—</span></div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Boende</p>
+    <div class="g2">
+      <div class="field"><label>Hyra</label><input type="number" id="e_hyra" value="0" min="0" step="50"></div>
+      <div class="field"><label>Garage</label><input type="number" id="e_garage" value="0" min="0" step="50"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Försäkringar</p>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="field"><label>If</label><input type="number" id="e_if" value="0" min="0" step="50"></div>
+      <div class="field"><label>Folksam 1</label><input type="number" id="e_folksam1" value="0" min="0" step="50"></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Folksam 2</label><input type="number" id="e_folksam2" value="0" min="0" step="50"></div>
+      <div class="field"><label>Svedea</label><input type="number" id="e_svedea" value="0" min="0" step="50"></div>
+    </div>
+    <div class="g2" style="margin-top:10px">
+      <div class="field"><label>Övriga försäkringar</label><input type="number" id="e_forsakring" value="0" min="0" step="50"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Lån &amp; kredit</p>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="field"><label>ICA lån</label><input type="number" id="e_ica" value="0" min="0" step="50"></div>
+      <div class="field"><label>Santander</label><input type="number" id="e_santander" value="0" min="0" step="50"></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Klarna</label><input type="number" id="e_klarna" value="0" min="0" step="50"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Fasta kostnader</p>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="field"><label>Efakturor</label><input type="number" id="e_efaktura" value="0" min="0" step="50"></div>
+      <div class="field"><label>A-kassa</label><input type="number" id="e_akassa" value="0" min="0" step="50"></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Gym</label><input type="number" id="e_gym" value="0" min="0" step="50"></div>
+      <div class="field"><label>Sparande</label><input type="number" id="e_sparande" value="0" min="0" step="50"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Livsmedel &amp; övrigt</p>
+    <div class="g2">
+      <div class="field"><label>Matkostnader</label><input type="number" id="e_mat" value="0" min="0" step="50"></div>
+      <div class="field"><label>Övrigt</label><input type="number" id="e_ovrigt" value="0" min="0" step="50"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Specifikation</p>
+    <table class="bd">
+      <tr><td class="lbl">Nettolön</td><td class="amt" style="color:var(--green)" id="spec_netto">—</td></tr>
+      <tr class="cat"><td colspan="2">Boende</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Hyra</td><td class="amt" id="spec_hyra">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Garage</td><td class="amt" id="spec_garage">—</td></tr>
+      <tr class="cat"><td colspan="2">Försäkringar</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">If</td><td class="amt" id="spec_if">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Folksam 1</td><td class="amt" id="spec_folksam1">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Folksam 2</td><td class="amt" id="spec_folksam2">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Svedea</td><td class="amt" id="spec_svedea">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Övriga försäkringar</td><td class="amt" id="spec_forsakring">—</td></tr>
+      <tr class="cat"><td colspan="2">Lån &amp; kredit</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">ICA lån</td><td class="amt" id="spec_ica">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Santander</td><td class="amt" id="spec_santander">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Klarna</td><td class="amt" id="spec_klarna">—</td></tr>
+      <tr class="cat"><td colspan="2">Fasta kostnader</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Efakturor</td><td class="amt" id="spec_efaktura">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">A-kassa</td><td class="amt" id="spec_akassa">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Gym</td><td class="amt" id="spec_gym">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Sparande</td><td class="amt" id="spec_sparande">—</td></tr>
+      <tr class="cat"><td colspan="2">Livsmedel &amp; övrigt</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Matkostnader</td><td class="amt" id="spec_mat">—</td></tr>
+      <tr><td class="lbl" style="padding-left:10px">Övrigt</td><td class="amt" id="spec_ovrigt">—</td></tr>
+      <tr class="tr"><td class="lbl">Totala utgifter</td><td class="amt" id="spec_tot_utg">—</td></tr>
+      <tr class="tr"><td class="lbl" id="spec_kvar_lbl">Kvar att disponera</td><td class="amt" id="spec_kvar">—</td></tr>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<script>
+const KOMMUNAL=0.3239,STATLIG=0.20,BPT=598500,RKA=958,RKF=1142;
+const fmt=n=>Math.round(n).toLocaleString('sv-SE')+' kr';
+const gv=id=>parseFloat(document.getElementById(id).value)||0;
+function jsa(a){const p=57300;let j=0;if(a<=0.91*p)j=0;else if(a<=3.24*p)j=(a-0.91*p)*KOMMUNAL;else if(a<=8.08*p)j=2.12*p*KOMMUNAL;else if(a<=13.54*p)j=(2.12*p-(a-8.08*p)*0.03)*KOMMUNAL;else j=(2.12*p-5.46*p*0.03)*KOMMUNAL;return Math.max(0,j)}
+function arsskatt(a){return a*KOMMUNAL+(a>BPT?(a-BPT)*STATLIG:0)-jsa(a)}
+let cNetto=0;
+
+function calcLon(){
+  const g=gv('grundlon'),bp=gv('bonus_pct');
+  const bv=(g/1325)*gv('b_vardag'),bh=(g/600)*gv('b_helg');
+  const ov=(g/95)*gv('ot_vardag'),ok=(g/85)*gv('ot_kvall'),oh=(g/70)*gv('ot_helg'),os=(g/48)*gv('ot_storhelg');
+  const rk=document.getElementById('rikskort').checked;
+  const rka=rk?RKA:0,rkf=rk?RKF:0;
+  const mk=g+bv+bh+ov+ok+oh+os-rka,mb=mk+rkf,arm=mb*12;
+  const skm_ar=arsskatt(arm),skm=skm_ar/12;
+  const jsam=jsa(arm)/12,komm=arm*KOMMUNAL/12,stat=arm>BPT?(arm-BPT)*STATLIG/12:0;
+  const bonus=g*12*(bp/100);
+  let skb=0,brate=0;
+  if(bonus>0){skb=arsskatt(arm+bonus)-skm_ar;brate=skb/bonus*100}
+  const brutto=mk+bonus,tsk=skm+skb,netto=brutto-tsk;
+  cNetto=netto;
+  const eff=brutto>0?tsk/(mb+bonus)*100:0;
+  const s=id=>v=>document.getElementById(id).textContent=v;
+  s('res_brutto')(fmt(brutto));s('res_skatt')(fmt(tsk));
+  s('res_skattsats')(eff.toFixed(1)+'% effektiv skattesats');s('res_netto')(fmt(netto));
+  s('b_grundlon')(fmt(g));
+  const opt=(id,v)=>document.getElementById(id).textContent=v>0?fmt(v):'—';
+  opt('b_bv',bv);opt('b_bh',bh);opt('b_otv',ov);opt('b_otk',ok);opt('b_oth',oh);opt('b_ots',os);
+  document.getElementById('b_rk_avdrag').textContent=rk?'−'+fmt(rka):'—';
+  s('b_manad_brutto')(fmt(mk));
+  document.getElementById('b_rk_forman').textContent=rk?'+'+fmt(rkf):'—';
+  document.getElementById('b_kommunskatt').textContent='−'+fmt(komm);
+  document.getElementById('b_statskatt').textContent=stat>0?'−'+fmt(stat):'—';
+  document.getElementById('b_statlbl').textContent=stat>0?'Statlig skatt 20 %':'Statlig skatt (under brytpunkt)';
+  document.getElementById('b_jsa').textContent='+'+fmt(jsam);
+  const sb=bonus>0;
+  ['bb1','bb2','bb3'].forEach(id=>document.getElementById(id).style.display=sb?'':'none');
+  if(sb){s('b_bonus_belopp')(fmt(bonus));document.getElementById('b_bonus_skatt').textContent='−'+fmt(skb);s('b_bonus_rate')(brate.toFixed(1)+'%')}
+  document.getElementById('b_netto_lon').textContent=fmt(netto);
+  document.getElementById('rk_avdrag_row').style.display=rk?'':'none';
+  document.getElementById('rk_forman_row').style.display=rk?'':'none';
+  calcBudget();
+}
+
+function calcBudget(){
+  const n=cNetto;
+  const keys=['hyra','garage','if','folksam1','folksam2','svedea','forsakring','ica','santander','klarna','efaktura','akassa','gym','sparande','mat','ovrigt'];
+  let tot=0;const vals={};
+  keys.forEach(k=>{vals[k]=gv('e_'+k);tot+=vals[k]});
+  const kvar=n-tot,pct=n>0?Math.min(tot/n*100,100):0;
+  document.getElementById('bud_netto_in').textContent=fmt(n);
+  document.getElementById('bud_utgifter').textContent=fmt(tot);
+  document.getElementById('bud_kvar').textContent=fmt(kvar);
+  document.getElementById('bud_kvar_pct').textContent=(n>0?(kvar/n*100).toFixed(1):'0')+'% av netto';
+  const card=document.getElementById('bud_kvar_card');
+  card.className='metric'+(kvar<0?' bad':kvar<5000?' warn':' good');
+  const bar=document.getElementById('bud_bar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
+  document.getElementById('bud_bar_label').textContent=Math.round(pct)+'% av netto går till utgifter';
+  document.getElementById('spec_netto').textContent=fmt(n);
+  keys.forEach(k=>{const el=document.getElementById('spec_'+k);if(el)el.textContent=vals[k]>0?'−'+fmt(vals[k]):'—'});
+  document.getElementById('spec_tot_utg').textContent='−'+fmt(tot);
+  const kvarEl=document.getElementById('spec_kvar');
+  kvarEl.textContent=fmt(kvar);
+  kvarEl.style.color=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
+  document.getElementById('spec_kvar_lbl').textContent=kvar<0?'Underskott':'Kvar att disponera';
+}
+
+function showTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(el=>el.classList.remove('active'));
+  document.querySelector('[onclick="showTab(\''+t+'\')"]').classList.add('active');
+  document.getElementById('pane-'+t).classList.add('active');
+}
+
+function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon()}
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',calcLon));
+calcLon();
+</script>
