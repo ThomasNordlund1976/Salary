@@ -1,4 +1,9 @@
-
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lönkalkyl</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -6,16 +11,20 @@
   --surface:#1a2332;--surface2:#1f2a3c;
   --border:#1e2d42;--border2:#243350;
   --accent:#3b9eff;--accent2:#1a6fcc;
-  --accent-dim:rgba(59,158,255,0.12);--accent-glow:rgba(59,158,255,0.06);
+  --accent-dim:rgba(59,158,255,0.12);
   --green:#00d97e;--green-dim:rgba(0,217,126,0.10);
   --yellow:#f0b429;--yellow-dim:rgba(240,180,41,0.10);
   --red:#ff4560;--red-dim:rgba(255,69,96,0.10);
   --text:#e2e8f0;--text2:#7a8fa8;--text3:#3d5068;
   --radius:10px;--radius-sm:6px;
 }
-h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-
-.app{background:var(--bg);min-height:400px;padding:1.5rem;font-family:-apple-system,'Segoe UI',sans-serif;color:var(--text)}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif}
+.app{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.header h1{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+.header span{font-size:11px;color:var(--text3)}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);display:inline-block;margin-right:6px;transition:background 0.3s}
+.save-dot.saved{background:var(--green)}
 
 .tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:1.5rem}
 .tab{flex:1;padding:8px 0;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);border-radius:var(--radius-sm);transition:all 0.15s;letter-spacing:0.02em}
@@ -31,8 +40,9 @@ h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,
 
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;color:var(--text2);font-weight:400;letter-spacing:0.03em}
-.field input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.15s}
-.field input:focus{border-color:var(--accent)}
+.field input[type=number]{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.15s;-moz-appearance:textfield}
+.field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+.field input[type=number]:focus{border-color:var(--accent)}
 .hint{font-size:10px;color:var(--text3);margin-top:2px}
 
 .metric{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px}
@@ -70,15 +80,17 @@ h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,
 .toggle-row label{font-size:13px;color:var(--text2);cursor:pointer}
 input[type=checkbox]{accent-color:var(--accent);width:auto}
 
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.04em}
-.badge-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,217,126,0.25)}
-.badge-yellow{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(240,180,41,0.25)}
-.badge-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,69,96,0.25)}
+@media(max-width:520px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
 </style>
-
-<h2 class="sr-only">Lönekalkylator och budgetöversikt</h2>
-
+</head>
+<body>
 <div class="app">
+
+<div class="header">
+  <h1>Lönkalkyl</h1>
+  <span><span class="save-dot" id="save_dot"></span><span id="save_status">Laddar...</span></span>
+</div>
+
 <div class="tabs">
   <button class="tab active" onclick="showTab('lon')">Lönekalkyl</button>
   <button class="tab" onclick="showTab('budget')">Budgetöversikt</button>
@@ -155,7 +167,6 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <tr class="tr"><td class="lbl">Netto att ta hem</td><td class="amt" id="b_netto_lon" style="color:var(--green)">—</td></tr>
     </table>
   </div>
-
 </div>
 
 <div id="pane-budget" class="pane">
@@ -185,11 +196,11 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <div class="field"><label>If</label><input type="number" id="e_if" value="0" min="0" step="50"></div>
       <div class="field"><label>Folksam 1</label><input type="number" id="e_folksam1" value="0" min="0" step="50"></div>
     </div>
-    <div class="g2">
+    <div class="g2" style="margin-bottom:10px">
       <div class="field"><label>Folksam 2</label><input type="number" id="e_folksam2" value="0" min="0" step="50"></div>
       <div class="field"><label>Svedea</label><input type="number" id="e_svedea" value="0" min="0" step="50"></div>
     </div>
-    <div class="g2" style="margin-top:10px">
+    <div class="g2">
       <div class="field"><label>Övriga försäkringar</label><input type="number" id="e_forsakring" value="0" min="0" step="50"></div>
     </div>
   </div>
@@ -254,17 +265,53 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <tr class="tr"><td class="lbl" id="spec_kvar_lbl">Kvar att disponera</td><td class="amt" id="spec_kvar">—</td></tr>
     </table>
   </div>
-
-</div>
 </div>
 
+</div>
 <script>
 const KOMMUNAL=0.3239,STATLIG=0.20,BPT=598500,RKA=958,RKF=1142;
 const fmt=n=>Math.round(n).toLocaleString('sv-SE')+' kr';
 const gv=id=>parseFloat(document.getElementById(id).value)||0;
 function jsa(a){const p=57300;let j=0;if(a<=0.91*p)j=0;else if(a<=3.24*p)j=(a-0.91*p)*KOMMUNAL;else if(a<=8.08*p)j=2.12*p*KOMMUNAL;else if(a<=13.54*p)j=(2.12*p-(a-8.08*p)*0.03)*KOMMUNAL;else j=(2.12*p-5.46*p*0.03)*KOMMUNAL;return Math.max(0,j)}
 function arsskatt(a){return a*KOMMUNAL+(a>BPT?(a-BPT)*STATLIG:0)-jsa(a)}
-let cNetto=0;
+let cNetto=0,saveTimer=null;
+
+const SAVE_KEY='lonkalkyl_v1';
+const INPUT_IDS=['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg','e_hyra','e_garage','e_if','e_folksam1','e_folksam2','e_svedea','e_forsakring','e_ica','e_santander','e_klarna','e_efaktura','e_akassa','e_gym','e_sparande','e_mat','e_ovrigt'];
+
+function saveState(){
+  const data={};
+  INPUT_IDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    data[id]=el.type==='checkbox'?el.checked:el.value;
+  });
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+    const dot=document.getElementById('save_dot');
+    const st=document.getElementById('save_status');
+    dot.classList.add('saved');
+    st.textContent='Sparat';
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{dot.classList.remove('saved');st.textContent='Autospar aktivt';},2000);
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return false;
+    const data=JSON.parse(raw);
+    INPUT_IDS.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el||!(id in data))return;
+      if(el.type==='checkbox')el.checked=data[id];
+      else el.value=data[id];
+    });
+    document.getElementById('save_status').textContent='Autospar aktivt';
+    return true;
+  }catch(e){return false}
+}
 
 function calcLon(){
   const g=gv('grundlon'),bp=gv('bonus_pct');
@@ -281,14 +328,15 @@ function calcLon(){
   const brutto=mk+bonus,tsk=skm+skb,netto=brutto-tsk;
   cNetto=netto;
   const eff=brutto>0?tsk/(mb+bonus)*100:0;
-  const s=id=>v=>document.getElementById(id).textContent=v;
-  s('res_brutto')(fmt(brutto));s('res_skatt')(fmt(tsk));
-  s('res_skattsats')(eff.toFixed(1)+'% effektiv skattesats');s('res_netto')(fmt(netto));
-  s('b_grundlon')(fmt(g));
+  document.getElementById('res_brutto').textContent=fmt(brutto);
+  document.getElementById('res_skatt').textContent=fmt(tsk);
+  document.getElementById('res_skattsats').textContent=eff.toFixed(1)+'% effektiv skattesats';
+  document.getElementById('res_netto').textContent=fmt(netto);
+  document.getElementById('b_grundlon').textContent=fmt(g);
   const opt=(id,v)=>document.getElementById(id).textContent=v>0?fmt(v):'—';
   opt('b_bv',bv);opt('b_bh',bh);opt('b_otv',ov);opt('b_otk',ok);opt('b_oth',oh);opt('b_ots',os);
   document.getElementById('b_rk_avdrag').textContent=rk?'−'+fmt(rka):'—';
-  s('b_manad_brutto')(fmt(mk));
+  document.getElementById('b_manad_brutto').textContent=fmt(mk);
   document.getElementById('b_rk_forman').textContent=rk?'+'+fmt(rkf):'—';
   document.getElementById('b_kommunskatt').textContent='−'+fmt(komm);
   document.getElementById('b_statskatt').textContent=stat>0?'−'+fmt(stat):'—';
@@ -296,7 +344,7 @@ function calcLon(){
   document.getElementById('b_jsa').textContent='+'+fmt(jsam);
   const sb=bonus>0;
   ['bb1','bb2','bb3'].forEach(id=>document.getElementById(id).style.display=sb?'':'none');
-  if(sb){s('b_bonus_belopp')(fmt(bonus));document.getElementById('b_bonus_skatt').textContent='−'+fmt(skb);s('b_bonus_rate')(brate.toFixed(1)+'%')}
+  if(sb){document.getElementById('b_bonus_belopp').textContent=fmt(bonus);document.getElementById('b_bonus_skatt').textContent='−'+fmt(skb);document.getElementById('b_bonus_rate').textContent=brate.toFixed(1)+'%'}
   document.getElementById('b_netto_lon').textContent=fmt(netto);
   document.getElementById('rk_avdrag_row').style.display=rk?'':'none';
   document.getElementById('rk_forman_row').style.display=rk?'':'none';
@@ -335,7 +383,13 @@ function showTab(t){
   document.getElementById('pane-'+t).classList.add('active');
 }
 
-function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon()}
-document.querySelectorAll('input').forEach(el=>el.addEventListener('input',calcLon));
+function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon();saveState()}
+
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{calcLon();saveState()}));
+
+loadState();
 calcLon();
+document.getElementById('save_status').textContent='Autospar aktivt';
 </script>
+</body>
+</html>
