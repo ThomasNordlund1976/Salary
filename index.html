@@ -13,11 +13,12 @@
   --accent:#3b9eff;--accent2:#1a6fcc;
   --accent-dim:rgba(59,158,255,0.12);
   --green:#00d97e;--yellow:#f0b429;--red:#ff4560;
+  --purple:#a78bfa;--orange:#fb923c;
   --text:#e2e8f0;--text2:#7a8fa8;--text3:#3d5068;
   --radius:10px;--radius-sm:6px;
 }
 html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif}
-.app{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+.app{max-width:760px;margin:0 auto;padding:2rem 1.5rem}
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
 .header h1{font-size:18px;font-weight:600;letter-spacing:-0.01em}
 .save-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)}
@@ -56,6 +57,8 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-a
 .bd .tx td{color:var(--text3);font-size:12px}
 .bd .sub td{color:var(--text3);font-size:11px}
 .bd .cat td{font-size:10px;color:var(--accent);padding-top:12px;padding-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;border-bottom:none}
+.bd .aut td{color:var(--green)}
+.bd .efa td{color:var(--yellow)}
 .bar-track{height:5px;background:var(--surface);border-radius:999px;overflow:hidden;margin:10px 0 5px;border:1px solid var(--border)}
 .bar-fill{height:100%;border-radius:999px;transition:width 0.4s,background 0.4s}
 .bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
@@ -68,14 +71,31 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-a
 .toggle-row label{font-size:13px;color:var(--text2);cursor:pointer}
 input[type=checkbox]{accent-color:var(--accent);width:auto}
 
-/* Collapsible spec */
+/* Expense row with payment-type tags */
+.exp-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:10px}
+.exp-row:last-child{margin-bottom:0}
+.exp-row .field{flex:1}
+.pay-tags{display:flex;flex-direction:column;gap:3px;padding-bottom:1px}
+.pay-tag{display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap}
+.pay-tag input[type=checkbox]{accent-color:var(--green);width:12px;height:12px;margin:0;cursor:pointer}
+.pay-tag.efakt input[type=checkbox]{accent-color:var(--yellow)}
+.pay-tag span{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:0.04em;transition:color 0.15s}
+.pay-tag.checked-aut span{color:var(--green)}
+.pay-tag.checked-efa span{color:var(--yellow)}
+
+/* tag pill on spec rows */
+.tag-pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.05em;margin-left:6px;vertical-align:middle}
+.tag-aut{background:rgba(0,217,126,0.12);color:var(--green);border:1px solid rgba(0,217,126,0.25)}
+.tag-efa{background:rgba(240,180,41,0.12);color:var(--yellow);border:1px solid rgba(240,180,41,0.25)}
+
+/* Collapsible */
 .collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding-bottom:0}
 .collapsible-header.open{padding-bottom:1rem}
 .collapsible-header .chevron{width:16px;height:16px;color:var(--text3);transition:transform 0.2s;flex-shrink:0}
 .collapsible-header.open .chevron{transform:rotate(180deg)}
-.collapsible-body{overflow:hidden;transition:max-height 0.3s ease}
+.collapsible-body{overflow:hidden;transition:max-height 0.35s ease}
 
-/* Pie chart */
+/* Pie */
 .chart-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem 0 0.5rem}
 .chart-canvas-wrap{position:relative;width:220px;height:220px;margin:0 auto}
 .chart-center-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
@@ -86,7 +106,19 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .legend-pct{margin-left:auto;font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
 
-@media(max-width:520px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.legend{grid-template-columns:1fr}}
+/* payment summary chips */
+.pay-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.pay-chip{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px}
+.pay-chip .pc-label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 4px}
+.pay-chip .pc-val{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.pay-chip.aut .pc-label{color:var(--green)}
+.pay-chip.aut .pc-val{color:var(--green)}
+.pay-chip.efa .pc-label{color:var(--yellow)}
+.pay-chip.efa .pc-val{color:var(--yellow)}
+.pay-chip.unk .pc-label{color:var(--text3)}
+.pay-chip.unk .pc-val{color:var(--text2)}
+
+@media(max-width:540px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.legend{grid-template-columns:1fr}.exp-row{flex-wrap:wrap}.pay-tags{flex-direction:row;gap:8px}}
 </style>
 </head>
 <body>
@@ -105,7 +137,7 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
   <button class="tab" onclick="showTab('budget')">Budgetöversikt</button>
 </div>
 
-<!-- LÖNEFLIK -->
+<!-- ═══ LÖNEFLIK ═══ -->
 <div id="pane-lon" class="pane active">
   <div class="card">
     <p class="card-title">Grundlön</p>
@@ -116,10 +148,7 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
   </div>
   <div class="card">
     <p class="card-title">Rikskort förmån</p>
-    <div class="toggle-row" style="margin-bottom:10px">
-      <input type="checkbox" id="rikskort" checked>
-      <label for="rikskort">Aktiv denna månad</label>
-    </div>
+    <div class="toggle-row" style="margin-bottom:10px"><input type="checkbox" id="rikskort" checked><label for="rikskort">Aktiv denna månad</label></div>
     <div class="info-chips">
       <span class="chip">Löneavdrag <strong>−958 kr</strong></span>
       <span class="chip">Förmånsvärde (beskattas) <strong>+1 142 kr</strong></span>
@@ -174,7 +203,7 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
   </div>
 </div>
 
-<!-- BUDGETFLIK -->
+<!-- ═══ BUDGETFLIK ═══ -->
 <div id="pane-budget" class="pane">
 
   <div class="card">
@@ -186,164 +215,26 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
     </div>
     <div class="bar-track"><div class="bar-fill" id="bud_bar" style="width:0%"></div></div>
     <div class="bar-labels"><span>0 kr</span><span id="bud_bar_label">—</span></div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Boende — Lundbergs</p>
-    <div class="g3 mb">
-      <div class="field"><label>Lägenhet</label><input type="number" id="e_hyra" value="12500" min="0" step="1"></div>
-      <div class="field"><label>Garage</label><input type="number" id="e_garage" value="650" min="0" step="1"></div>
-      <div class="field"><label>MC-plats</label><input type="number" id="e_mcplats" value="330" min="0" step="1"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Övrigt boende</label><input type="number" id="e_boende_ovr" value="0" min="0" step="1"></div>
+    <div class="pay-summary">
+      <div class="pay-chip aut"><p class="pc-label">Autogiro</p><p class="pc-val" id="sum_aut">—</p></div>
+      <div class="pay-chip efa"><p class="pc-label">E-faktura</p><p class="pc-val" id="sum_efa">—</p></div>
+      <div class="pay-chip unk"><p class="pc-label">Ej kategoriserat</p><p class="pc-val" id="sum_unk">—</p></div>
     </div>
   </div>
 
-  <div class="card">
-    <p class="card-title">Försäkringar</p>
-    <div class="g2 mb">
-      <div class="field"><label>Trygg Hansa</label><input type="number" id="e_trygghansa" value="2500" min="0" step="1"></div>
-      <div class="field"><label>If Skadeförsäkring</label><input type="number" id="e_if" value="185" min="0" step="1"></div>
-    </div>
-    <div class="g2 mb">
-      <div class="field"><label>Folksam försäkring</label><input type="number" id="e_folksam1" value="2500" min="0" step="1"></div>
-      <div class="field"><label>Folksam pensionspar</label><input type="number" id="e_folksam2" value="500" min="0" step="1"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Svedea</label><input type="number" id="e_svedea" value="500" min="0" step="1"></div>
-      <div class="field"><label>Övrigt försäkringar</label><input type="number" id="e_forsakring_ovr" value="0" min="0" step="1"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">El, internet &amp; mobil</p>
-    <div class="g3 mb">
-      <div class="field"><label>E.ON</label><input type="number" id="e_eon" value="1200" min="0" step="1"></div>
-      <div class="field"><label>Bahnhof</label><input type="number" id="e_bahnhof" value="550" min="0" step="1"></div>
-      <div class="field"><label>Verbal (mobil)</label><input type="number" id="e_verbal" value="700" min="0" step="1"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Övrigt el/internet/mobil</label><input type="number" id="e_eim_ovr" value="0" min="0" step="1"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Lån &amp; kredit</p>
-    <div class="g2 mb">
-      <div class="field"><label>Santander</label><input type="number" id="e_santander" value="2900" min="0" step="1"></div>
-      <div class="field"><label>Klarna</label><input type="number" id="e_klarna" value="0" min="0" step="1"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>ICA lån</label><input type="number" id="e_ica" value="2900" min="0" step="1"></div>
-      <div class="field"><label>Övrigt lån/kredit</label><input type="number" id="e_lan_ovr" value="0" min="0" step="1"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Kropp &amp; hälsa</p>
-    <div class="g3 mb">
-      <div class="field"><label>Gym</label><input type="number" id="e_gym" value="450" min="0" step="1"></div>
-      <div class="field"><label>Synsam / PayEx</label><input type="number" id="e_synsam" value="200" min="0" step="1"></div>
-      <div class="field"><label>Tandläkare</label><input type="number" id="e_tandlakare" value="0" min="0" step="1"></div>
-    </div>
-    <div class="g3">
-      <div class="field"><label>Apotek</label><input type="number" id="e_apotek" value="0" min="0" step="1"></div>
-      <div class="field"><label>Massage / Naprapat</label><input type="number" id="e_massage" value="0" min="0" step="1"></div>
-      <div class="field"><label>Träningskläder</label><input type="number" id="e_trkl" value="0" min="0" step="1"></div>
-    </div>
-    <div class="g2" style="margin-top:10px">
-      <div class="field"><label>Övrigt kropp/hälsa</label><input type="number" id="e_halsa_ovr" value="0" min="0" step="1"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Fasta kostnader</p>
-    <div class="g2 mb">
-      <div class="field"><label>Unionen (a-kassa)</label><input type="number" id="e_unionen" value="285" min="0" step="1"></div>
-      <div class="field"><label>Transportstyrelsen</label><input type="number" id="e_transport" value="20" min="0" step="1"></div>
-    </div>
-    <div class="g2 mb">
-      <div class="field"><label>Jasmine</label><input type="number" id="e_jasmine" value="650" min="0" step="1"></div>
-      <div class="field"><label>Månadspeng</label><input type="number" id="e_manadspeng" value="200" min="0" step="1"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Stående överföring 1</label><input type="number" id="e_staende1" value="200" min="0" step="1"></div>
-      <div class="field"><label>Stående överföring 2</label><input type="number" id="e_staende2" value="200" min="0" step="1"></div>
-    </div>
-    <div class="g2" style="margin-top:10px">
-      <div class="field"><label>Övrigt fasta kostnader</label><input type="number" id="e_fasta_ovr" value="0" min="0" step="1"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Sparande &amp; mat</p>
-    <div class="g2 mb">
-      <div class="field"><label>Sparande</label><input type="number" id="e_sparande" value="3000" min="0" step="50"></div>
-      <div class="field"><label>Matkostnader</label><input type="number" id="e_mat" value="5000" min="0" step="50"></div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Övrigt</label><input type="number" id="e_ovrigt" value="0" min="0" step="50"></div>
-    </div>
-  </div>
+  <!-- Helper macro: each expense item is rendered via JS to avoid repeating the tag HTML -->
+  <!-- We build the budget cards dynamically from a data structure -->
+  <div id="budget_cards"></div>
 
   <!-- Specifikation — utfällbar -->
   <div class="card">
     <div class="collapsible-header" id="spec_toggle" onclick="toggleSpec()">
       <p class="card-title" style="margin:0;flex:1">Specifikation</p>
-      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M4 6l4 4 4-4"/>
-      </svg>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
     </div>
     <div class="collapsible-body" id="spec_body" style="max-height:0">
       <div style="padding-top:1rem">
-      <table class="bd">
-        <tr><td class="lbl">Nettolön</td><td class="amt" style="color:var(--green)" id="spec_netto">—</td></tr>
-        <tr class="cat"><td colspan="2">Boende — Lundbergs</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Lägenhet</td><td class="amt" id="spec_hyra">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Garage</td><td class="amt" id="spec_garage">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">MC-plats</td><td class="amt" id="spec_mcplats">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt boende</td><td class="amt" id="spec_boende_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">Försäkringar</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Trygg Hansa</td><td class="amt" id="spec_trygghansa">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">If Skadeförsäkring</td><td class="amt" id="spec_if">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Folksam försäkring</td><td class="amt" id="spec_folksam1">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Folksam pensionspar</td><td class="amt" id="spec_folksam2">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Svedea</td><td class="amt" id="spec_svedea">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt försäkringar</td><td class="amt" id="spec_forsakring_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">El, internet &amp; mobil</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">E.ON</td><td class="amt" id="spec_eon">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Bahnhof</td><td class="amt" id="spec_bahnhof">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Verbal</td><td class="amt" id="spec_verbal">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt el/internet/mobil</td><td class="amt" id="spec_eim_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">Lån &amp; kredit</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Santander</td><td class="amt" id="spec_santander">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Klarna</td><td class="amt" id="spec_klarna">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">ICA lån</td><td class="amt" id="spec_ica">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt lån/kredit</td><td class="amt" id="spec_lan_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">Kropp &amp; hälsa</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Gym</td><td class="amt" id="spec_gym">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Synsam / PayEx</td><td class="amt" id="spec_synsam">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Tandläkare</td><td class="amt" id="spec_tandlakare">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Apotek</td><td class="amt" id="spec_apotek">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Massage / Naprapat</td><td class="amt" id="spec_massage">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Träningskläder</td><td class="amt" id="spec_trkl">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt kropp/hälsa</td><td class="amt" id="spec_halsa_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">Fasta kostnader</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Unionen (a-kassa)</td><td class="amt" id="spec_unionen">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Transportstyrelsen</td><td class="amt" id="spec_transport">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Jasmine</td><td class="amt" id="spec_jasmine">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Månadspeng</td><td class="amt" id="spec_manadspeng">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Stående överföring 1</td><td class="amt" id="spec_staende1">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Stående överföring 2</td><td class="amt" id="spec_staende2">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt fasta kostnader</td><td class="amt" id="spec_fasta_ovr">—</td></tr>
-        <tr class="cat"><td colspan="2">Sparande &amp; mat</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Sparande</td><td class="amt" id="spec_sparande">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Matkostnader</td><td class="amt" id="spec_mat">—</td></tr>
-        <tr><td class="lbl" style="padding-left:10px">Övrigt</td><td class="amt" id="spec_ovrigt">—</td></tr>
-        <tr class="tr"><td class="lbl">Totala utgifter</td><td class="amt" id="spec_tot_utg">—</td></tr>
-        <tr class="tr"><td class="lbl" id="spec_kvar_lbl">Kvar att disponera</td><td class="amt" id="spec_kvar">—</td></tr>
-      </table>
+        <table class="bd" id="spec_table"></table>
       </div>
     </div>
   </div>
@@ -354,10 +245,7 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
     <div class="chart-wrap">
       <div class="chart-canvas-wrap">
         <canvas id="pie_canvas" width="220" height="220"></canvas>
-        <div class="chart-center-label">
-          <div class="cv" id="pie_total">—</div>
-          <div class="cl">totalt/mån</div>
-        </div>
+        <div class="chart-center-label"><div class="cv" id="pie_total">—</div><div class="cl">totalt/mån</div></div>
       </div>
       <div class="legend" id="pie_legend"></div>
     </div>
@@ -367,108 +255,219 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 </div>
 
 <script>
+// ─── Tax helpers ───────────────────────────────────────────────────
 const KOMMUNAL=0.3239,STATLIG=0.20,BPT=598500,RKA=958,RKF=1142;
 const fmt=n=>Math.round(n).toLocaleString('sv-SE')+' kr';
-const gv=id=>parseFloat(document.getElementById(id).value)||0;
+const gv=id=>{const el=document.getElementById(id);return el?parseFloat(el.value)||0:0};
 function jsa(a){const p=57300;let j=0;if(a<=0.91*p)j=0;else if(a<=3.24*p)j=(a-0.91*p)*KOMMUNAL;else if(a<=8.08*p)j=2.12*p*KOMMUNAL;else if(a<=13.54*p)j=(2.12*p-(a-8.08*p)*0.03)*KOMMUNAL;else j=(2.12*p-5.46*p*0.03)*KOMMUNAL;return Math.max(0,j)}
 function arsskatt(a){return a*KOMMUNAL+(a>BPT?(a-BPT)*STATLIG:0)-jsa(a)}
-let cNetto=0,saveTimer=null,specOpen=false;
 
+// ─── Category / item data ──────────────────────────────────────────
 const CATS=[
-  {id:'boende',   label:'Boende',           color:'#3b9eff', keys:['hyra','garage','mcplats','boende_ovr']},
-  {id:'forsakr',  label:'Försäkringar',     color:'#a78bfa', keys:['trygghansa','if','folksam1','folksam2','svedea','forsakring_ovr']},
-  {id:'eim',      label:'El / internet / mobil', color:'#34d399', keys:['eon','bahnhof','verbal','eim_ovr']},
-  {id:'lan',      label:'Lån & kredit',     color:'#fb923c', keys:['santander','klarna','ica','lan_ovr']},
-  {id:'halsa',    label:'Kropp & hälsa',    color:'#f472b6', keys:['gym','synsam','tandlakare','apotek','massage','trkl','halsa_ovr']},
-  {id:'fasta',    label:'Fasta kostnader',  color:'#facc15', keys:['unionen','transport','jasmine','manadspeng','staende1','staende2','fasta_ovr']},
-  {id:'mat',      label:'Sparande & mat',   color:'#00d97e', keys:['sparande','mat','ovrigt']},
+  {id:'boende',  label:'Boende — Lundbergs',   color:'#3b9eff',
+   items:[{k:'hyra',     l:'Lägenhet',           def:12500},
+          {k:'garage',   l:'Garage',             def:650},
+          {k:'mcplats',  l:'MC-plats',           def:330},
+          {k:'boende_ovr',l:'Övrigt boende',     def:0}]},
+  {id:'forsakr', label:'Försäkringar',          color:'#a78bfa',
+   items:[{k:'trygghansa',l:'Trygg Hansa',       def:2500},
+          {k:'if',        l:'If Skadeförsäkring',def:185},
+          {k:'folksam1',  l:'Folksam försäkring',def:2500},
+          {k:'folksam2',  l:'Folksam pensionspar',def:500},
+          {k:'svedea',    l:'Svedea',            def:500},
+          {k:'forsakring_ovr',l:'Övrigt försäkringar',def:0}]},
+  {id:'eim',     label:'El, internet & mobil',  color:'#34d399',
+   items:[{k:'eon',    l:'E.ON',                 def:1200},
+          {k:'bahnhof',l:'Bahnhof',              def:550},
+          {k:'verbal', l:'Verbal (mobil)',        def:700},
+          {k:'eim_ovr',l:'Övrigt el/internet/mobil',def:0}]},
+  {id:'lan',     label:'Lån & kredit',          color:'#fb923c',
+   items:[{k:'santander',l:'Santander',          def:2900},
+          {k:'klarna',   l:'Klarna',             def:0},
+          {k:'ica',      l:'ICA lån',            def:2900},
+          {k:'lan_ovr',  l:'Övrigt lån/kredit',  def:0}]},
+  {id:'halsa',   label:'Kropp & hälsa',         color:'#f472b6',
+   items:[{k:'gym',       l:'Gym',               def:450},
+          {k:'synsam',    l:'Synsam / PayEx',    def:200},
+          {k:'tandlakare',l:'Tandläkare',         def:0},
+          {k:'apotek',    l:'Apotek',            def:0},
+          {k:'massage',   l:'Massage / Naprapat',def:0},
+          {k:'trkl',      l:'Träningskläder',    def:0},
+          {k:'halsa_ovr', l:'Övrigt kropp/hälsa',def:0}]},
+  {id:'fasta',   label:'Fasta kostnader',       color:'#facc15',
+   items:[{k:'unionen',  l:'Unionen (a-kassa)',  def:285},
+          {k:'transport',l:'Transportstyrelsen', def:20},
+          {k:'jasmine',  l:'Jasmine',            def:650},
+          {k:'manadspeng',l:'Månadspeng',        def:200},
+          {k:'staende1', l:'Stående överföring 1',def:200},
+          {k:'staende2', l:'Stående överföring 2',def:200},
+          {k:'fasta_ovr',l:'Övrigt fasta kostnader',def:0}]},
+  {id:'mat',     label:'Sparande & mat',        color:'#00d97e',
+   items:[{k:'sparande', l:'Sparande',           def:3000},
+          {k:'mat',      l:'Matkostnader',       def:5000},
+          {k:'ovrigt',   l:'Övrigt',             def:0}]},
 ];
 
-const EXP_KEYS=CATS.flatMap(c=>c.keys);
+const ALL_ITEMS=CATS.flatMap(c=>c.items);
+const ALL_KEYS=ALL_ITEMS.map(i=>i.k);
 
-const SAVE_KEY='lonkalkyl_v4';
-const INPUT_IDS=[
-  'grundlon','bonus_pct','rikskort','b_vardag','b_helg',
-  'ot_vardag','ot_kvall','ot_helg','ot_storhelg',
-  ...EXP_KEYS.map(k=>'e_'+k)
-];
+// payment type state: '' | 'aut' | 'efa'
+const payType={};
+ALL_KEYS.forEach(k=>payType[k]='');
 
-function saveState(){
-  const data={};
-  INPUT_IDS.forEach(id=>{const el=document.getElementById(id);if(!el)return;data[id]=el.type==='checkbox'?el.checked:el.value});
-  try{
-    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
-    const dot=document.getElementById('save_dot'),st=document.getElementById('save_status');
-    dot.classList.add('saved');st.textContent='Sparat';
-    clearTimeout(saveTimer);
-    saveTimer=setTimeout(()=>{dot.classList.remove('saved');st.textContent='Autospar aktivt';},2000);
-  }catch(e){}
+// ─── Build budget cards ────────────────────────────────────────────
+function buildBudgetCards(){
+  const container=document.getElementById('budget_cards');
+  CATS.forEach(cat=>{
+    const card=document.createElement('div');card.className='card';
+    const title=document.createElement('p');title.className='card-title';title.textContent=cat.label;
+    card.appendChild(title);
+    // arrange items in pairs
+    for(let i=0;i<cat.items.length;i+=2){
+      const row=document.createElement('div');
+      row.className='exp-row'+(i+2<cat.items.length?' mb':'');
+      const pair=cat.items.slice(i,i+2);
+      // left item: tags on right
+      pair.forEach((item,idx)=>{
+        // left-side item: field first, tags after
+        // right-side item: tags first, field after — so tags are between fields
+        const isRight=(pair.length===2&&idx===1);
+        if(isRight){
+          // insert tag group for right item (appears between fields = left of right field)
+          row.appendChild(makeTagGroup(item.k,'right'));
+        }
+        const fieldWrap=document.createElement('div');fieldWrap.className='field';
+        const lbl=document.createElement('label');lbl.textContent=item.l;lbl.htmlFor='e_'+item.k;
+        const inp=document.createElement('input');
+        inp.type='number';inp.id='e_'+item.k;inp.value=item.def;inp.min=0;inp.step=1;
+        inp.addEventListener('input',()=>{calcLon();saveState()});
+        fieldWrap.appendChild(lbl);fieldWrap.appendChild(inp);
+        row.appendChild(fieldWrap);
+        if(!isRight){
+          row.appendChild(makeTagGroup(item.k,'left'));
+        }
+      });
+      card.appendChild(row);
+    }
+    container.appendChild(card);
+  });
 }
 
-function loadState(){
-  try{
-    const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
-    const data=JSON.parse(raw);
-    INPUT_IDS.forEach(id=>{const el=document.getElementById(id);if(!el||!(id in data))return;if(el.type==='checkbox')el.checked=data[id];else el.value=data[id]});
-    document.getElementById('save_status').textContent='Autospar aktivt';
-    return true;
-  }catch(e){return false}
+function makeTagGroup(key,side){
+  const wrap=document.createElement('div');wrap.className='pay-tags';wrap.id='tags_'+key;
+  ['aut','efa'].forEach(type=>{
+    const tag=document.createElement('label');
+    tag.className='pay-tag '+(type==='efa'?'efakt':'');
+    tag.id='tag_'+key+'_'+type;
+    const cb=document.createElement('input');
+    cb.type='checkbox';cb.id='cb_'+key+'_'+type;
+    cb.addEventListener('change',()=>onTagChange(key,type,cb.checked));
+    const sp=document.createElement('span');
+    sp.textContent=type==='aut'?'Aut':'Efakt';
+    tag.appendChild(cb);tag.appendChild(sp);
+    wrap.appendChild(tag);
+  });
+  return wrap;
 }
 
-function toggleSpec(){
-  specOpen=!specOpen;
-  const body=document.getElementById('spec_body');
-  const hdr=document.getElementById('spec_toggle');
-  if(specOpen){body.style.maxHeight=body.scrollHeight+'px';hdr.classList.add('open')}
-  else{body.style.maxHeight='0';hdr.classList.remove('open')}
+function onTagChange(key,type,checked){
+  if(checked){
+    // deselect the other
+    const other=type==='aut'?'efa':'aut';
+    const otherCb=document.getElementById('cb_'+key+'_'+other);
+    if(otherCb)otherCb.checked=false;
+    document.getElementById('tag_'+key+'_'+other).className='pay-tag '+(other==='efa'?'efakt':'');
+    payType[key]=type;
+    document.getElementById('tag_'+key+'_'+type).className='pay-tag '+(type==='efa'?'efakt':'')+(type==='aut'?' checked-aut':' checked-efa');
+  } else {
+    payType[key]='';
+    document.getElementById('tag_'+key+'_'+type).className='pay-tag '+(type==='efa'?'efakt':'');
+  }
+  saveState();calcBudget();
 }
 
+// ─── Spec table builder ─────────────────────────────────────────────
+function buildSpecTable(vals,netto,tot,kvar){
+  const tbl=document.getElementById('spec_table');
+  tbl.innerHTML='';
+  const row=(cls,lbl,amt,pill)=>{
+    const tr=document.createElement('tr');if(cls)tr.className=cls;
+    const td1=document.createElement('td');td1.className='lbl';
+    td1.innerHTML=lbl+(pill?`<span class="tag-pill ${pill.cls}">${pill.txt}</span>`:'');
+    const td2=document.createElement('td');td2.className='amt';td2.textContent=amt;
+    tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);return tr;
+  };
+  row('','Nettolön','<span style="color:var(--green)">'+fmt(netto)+'</span>');
+  CATS.forEach(cat=>{
+    row('cat',cat.label,'');
+    cat.items.forEach(item=>{
+      const v=vals[item.k]||0;
+      const pt=payType[item.k];
+      let pill=null;
+      if(pt==='aut')pill={cls:'tag-aut',txt:'Aut'};
+      else if(pt==='efa')pill={cls:'tag-efa',txt:'Efakt'};
+      const td1txt='<span style="padding-left:10px">'+item.l+'</span>';
+      const tr=document.createElement('tr');
+      const td1=document.createElement('td');td1.className='lbl';
+      td1.innerHTML='<span style="padding-left:10px">'+item.l+'</span>'+(pill?`<span class="tag-pill ${pill.cls}">${pill.txt}</span>`:'');
+      const td2=document.createElement('td');td2.className='amt';td2.textContent=v>0?'−'+fmt(v):'—';
+      tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);
+    });
+  });
+  // payment type totals
+  const autTotal=ALL_KEYS.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
+  const efaTotal=ALL_KEYS.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
+  const unkTotal=ALL_KEYS.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
+  const sep=()=>{const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=2;td.style.cssText='padding:0;border-bottom:none';const d=document.createElement('div');d.style.cssText='height:1px;background:var(--border2);margin:10px 0 2px';td.appendChild(d);tr.appendChild(td);tbl.appendChild(tr)};
+  sep();
+  const sumRow=(cls,lbl,val,color)=>{
+    const tr=document.createElement('tr');tr.className='tr';
+    const td1=document.createElement('td');td1.className='lbl';td1.textContent=lbl;
+    const td2=document.createElement('td');td2.className='amt';td2.textContent='−'+fmt(val);if(color)td2.style.color=color;
+    tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);
+  };
+  sumRow('','Autogiro totalt',autTotal,'var(--green)');
+  sumRow('','E-faktura totalt',efaTotal,'var(--yellow)');
+  sumRow('','Ej kategoriserat',unkTotal,'var(--text2)');
+  const trTot=document.createElement('tr');trTot.className='tr';
+  const tt1=document.createElement('td');tt1.className='lbl';tt1.textContent='Totala utgifter';
+  const tt2=document.createElement('td');tt2.className='amt';tt2.textContent='−'+fmt(tot);
+  trTot.appendChild(tt1);trTot.appendChild(tt2);tbl.appendChild(trTot);
+  const trKvar=document.createElement('tr');trKvar.className='tr';
+  const tk1=document.createElement('td');tk1.className='lbl';tk1.textContent=kvar<0?'Underskott':'Kvar att disponera';
+  const tk2=document.createElement('td');tk2.className='amt';tk2.textContent=fmt(kvar);
+  tk2.style.color=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
+  trKvar.appendChild(tk1);trKvar.appendChild(tk2);tbl.appendChild(trKvar);
+}
+
+// ─── Pie ──────────────────────────────────────────────────────────
 function drawPie(catTotals,grandTotal){
   const canvas=document.getElementById('pie_canvas');
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,R=95,inner=58;
-  ctx.clearRect(0,0,W,H);
-  if(grandTotal<=0){
-    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.fillStyle='#1a2332';ctx.fill();
-    ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);
-    ctx.fillStyle='#0d1117';ctx.fill();
-    return;
-  }
-  let startAngle=-Math.PI/2;
+  const cx=110,cy=110,R=100,inner=62;
+  ctx.clearRect(0,0,220,220);
+  if(grandTotal<=0){ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle='#1a2332';ctx.fill();ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();return}
+  let start=-Math.PI/2;
   catTotals.forEach(({color,val})=>{
     if(val<=0)return;
     const slice=(val/grandTotal)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,R,startAngle,startAngle+slice);
-    ctx.closePath();ctx.fillStyle=color;ctx.fill();
-    startAngle+=slice;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,start,start+slice);ctx.closePath();ctx.fillStyle=color;ctx.fill();
+    start+=slice;
   });
-  ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);
-  ctx.fillStyle='#0d1117';ctx.fill();
-  // thin gap lines
-  startAngle=-Math.PI/2;
+  ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();
+  start=-Math.PI/2;
   catTotals.forEach(({val})=>{
     if(val<=0)return;
     const slice=(val/grandTotal)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx+inner*Math.cos(startAngle),cy+inner*Math.sin(startAngle));
-    ctx.lineTo(cx+R*Math.cos(startAngle),cy+R*Math.sin(startAngle));
+    ctx.beginPath();ctx.moveTo(cx+inner*Math.cos(start),cy+inner*Math.sin(start));
+    ctx.lineTo(cx+R*Math.cos(start),cy+R*Math.sin(start));
     ctx.strokeStyle='#0d1117';ctx.lineWidth=1.5;ctx.stroke();
-    startAngle+=slice;
+    start+=slice;
   });
 }
 
-function updateLegend(catTotals,grandTotal){
-  const el=document.getElementById('pie_legend');
-  el.innerHTML='';
-  catTotals.forEach(({label,color,val})=>{
-    if(val<=0)return;
-    const pct=grandTotal>0?(val/grandTotal*100).toFixed(1):'0';
-    const item=document.createElement('div');item.className='legend-item';
-    item.innerHTML=`<span class="legend-dot" style="background:${color}"></span><span>${label}</span><span class="legend-pct">${pct}%</span>`;
-    el.appendChild(item);
-  });
-}
+// ─── Main calc ────────────────────────────────────────────────────
+let cNetto=0,saveTimer=null,specOpen=false;
 
 function calcLon(){
   const g=gv('grundlon'),bp=gv('bonus_pct');
@@ -510,8 +509,9 @@ function calcLon(){
 
 function calcBudget(){
   const n=cNetto;
-  let tot=0;const vals={};
-  EXP_KEYS.forEach(k=>{vals[k]=gv('e_'+k);tot+=vals[k]});
+  const vals={};
+  let tot=0;
+  ALL_ITEMS.forEach(i=>{vals[i.k]=gv('e_'+i.k);tot+=vals[i.k]});
   const kvar=n-tot,pct=n>0?Math.min(tot/n*100,100):0;
   document.getElementById('bud_netto_in').textContent=fmt(n);
   document.getElementById('bud_utgifter').textContent=fmt(tot);
@@ -523,23 +523,81 @@ function calcBudget(){
   bar.style.width=pct+'%';
   bar.style.background=pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
   document.getElementById('bud_bar_label').textContent=Math.round(pct)+'% av netto går till utgifter';
-  document.getElementById('spec_netto').textContent=fmt(n);
-  EXP_KEYS.forEach(k=>{const el=document.getElementById('spec_'+k);if(el)el.textContent=vals[k]>0?'−'+fmt(vals[k]):'—'});
-  document.getElementById('spec_tot_utg').textContent='−'+fmt(tot);
-  const kvarEl=document.getElementById('spec_kvar');
-  kvarEl.textContent=fmt(kvar);
-  kvarEl.style.color=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
-  document.getElementById('spec_kvar_lbl').textContent=kvar<0?'Underskott':'Kvar att disponera';
+  // payment type sums
+  const autSum=ALL_KEYS.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
+  const efaSum=ALL_KEYS.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
+  const unkSum=ALL_KEYS.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
+  document.getElementById('sum_aut').textContent=fmt(autSum);
+  document.getElementById('sum_efa').textContent=fmt(efaSum);
+  document.getElementById('sum_unk').textContent=fmt(unkSum);
+  // spec
+  buildSpecTable(vals,n,tot,kvar);
+  if(specOpen){const body=document.getElementById('spec_body');body.style.maxHeight=body.scrollHeight+'px'}
   // pie
-  const catTotals=CATS.map(c=>({
-    label:c.label,color:c.color,
-    val:c.keys.reduce((s,k)=>s+(vals[k]||0),0)
-  }));
+  const catTotals=CATS.map(c=>({label:c.label,color:c.color,val:c.items.reduce((s,i)=>s+(vals[i.k]||0),0)}));
   document.getElementById('pie_total').textContent=fmt(tot);
   drawPie(catTotals,tot);
-  updateLegend(catTotals,tot);
-  // update open spec height
-  if(specOpen){const body=document.getElementById('spec_body');body.style.maxHeight=body.scrollHeight+'px'}
+  const leg=document.getElementById('pie_legend');leg.innerHTML='';
+  catTotals.forEach(({label,color,val})=>{
+    if(val<=0)return;
+    const pct=tot>0?(val/tot*100).toFixed(1):'0';
+    const item=document.createElement('div');item.className='legend-item';
+    item.innerHTML=`<span class="legend-dot" style="background:${color}"></span><span>${label}</span><span class="legend-pct">${pct}%</span>`;
+    leg.appendChild(item);
+  });
+}
+
+// ─── Persistence ─────────────────────────────────────────────────
+const SAVE_KEY='lonkalkyl_v4';
+
+function saveState(){
+  const data={payType:{...payType}};
+  // lon inputs
+  ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    data[id]=el.type==='checkbox'?el.checked:el.value;
+  });
+  ALL_KEYS.forEach(k=>{const el=document.getElementById('e_'+k);if(el)data['e_'+k]=el.value});
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+    const dot=document.getElementById('save_dot'),st=document.getElementById('save_status');
+    dot.classList.add('saved');st.textContent='Sparat';
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{dot.classList.remove('saved');st.textContent='Autospar aktivt';},2000);
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
+    const data=JSON.parse(raw);
+    ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+      const el=document.getElementById(id);if(!el||!(id in data))return;
+      if(el.type==='checkbox')el.checked=data[id];else el.value=data[id];
+    });
+    ALL_KEYS.forEach(k=>{const el=document.getElementById('e_'+k);if(el&&('e_'+k) in data)el.value=data['e_'+k]});
+    if(data.payType){
+      Object.keys(data.payType).forEach(k=>{
+        if(!(k in payType))return;
+        const pt=data.payType[k];
+        payType[k]=pt;
+        if(pt==='aut'||pt==='efa'){
+          const cb=document.getElementById('cb_'+k+'_'+pt);
+          if(cb){cb.checked=true;document.getElementById('tag_'+k+'_'+pt).className='pay-tag '+(pt==='efa'?'efakt':'')+(pt==='aut'?' checked-aut':' checked-efa')}
+        }
+      });
+    }
+    document.getElementById('save_status').textContent='Autospar aktivt';
+    return true;
+  }catch(e){return false}
+}
+
+function toggleSpec(){
+  specOpen=!specOpen;
+  const body=document.getElementById('spec_body');
+  const hdr=document.getElementById('spec_toggle');
+  if(specOpen){body.style.maxHeight=body.scrollHeight+'px';hdr.classList.add('open')}
+  else{body.style.maxHeight='0';hdr.classList.remove('open')}
 }
 
 function showTab(t){
@@ -551,7 +609,8 @@ function showTab(t){
 
 function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon();saveState()}
 
-document.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{calcLon();saveState()}));
+// ─── Init ─────────────────────────────────────────────────────────
+buildBudgetCards();
 loadState();
 calcLon();
 </script>
