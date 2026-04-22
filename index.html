@@ -548,6 +548,12 @@ function showTab(t){
 function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon();saveState()}
 
 buildBudgetCards();
+// Attach listeners to all static inputs in the lon pane
+['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener(el.type==='checkbox'?'change':'input',()=>{calcLon();saveState()});
+});
 loadState();
 calcLon();
 </script>
