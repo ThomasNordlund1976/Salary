@@ -13,7 +13,6 @@
   --accent:#3b9eff;--accent2:#1a6fcc;
   --accent-dim:rgba(59,158,255,0.12);
   --green:#00d97e;--yellow:#f0b429;--red:#ff4560;
-  --purple:#a78bfa;--orange:#fb923c;
   --text:#e2e8f0;--text2:#7a8fa8;--text3:#3d5068;
   --radius:10px;--radius-sm:6px;
 }
@@ -31,14 +30,38 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-a
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem}
 .card-title{font-size:10px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:0.12em;margin:0 0 1rem;display:flex;align-items:center;gap:8px}
 .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.mb{margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.mb{margin-bottom:12px}
+
+/* Base field */
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;color:var(--text2);letter-spacing:0.03em}
-.field input[type=number]{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.15s;-moz-appearance:textfield}
-.field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+.field input[type=number]{
+  width:100%;background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);color:var(--text);font-size:13px;
+  padding:7px 10px;outline:none;transition:border-color 0.15s;-moz-appearance:textfield
+}
+.field input[type=number]::-webkit-inner-spin-button,
+.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .field input[type=number]:focus{border-color:var(--accent)}
+
+/* Payment type tags — sit BELOW the input inside the field */
+.pay-btns{display:flex;gap:6px;margin-top:5px}
+.pay-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;
+  font-size:10px;font-weight:500;color:var(--text3);
+  letter-spacing:0.05em;transition:all 0.15s;white-space:nowrap;
+  user-select:none;
+}
+.pay-btn input[type=checkbox]{display:none}
+.pay-btn.aut{border-color:var(--border2);color:var(--text3)}
+.pay-btn.aut.active{background:rgba(0,217,126,0.12);border-color:rgba(0,217,126,0.4);color:var(--green)}
+.pay-btn.efa{border-color:var(--border2);color:var(--text3)}
+.pay-btn.efa.active{background:rgba(240,180,41,0.12);border-color:rgba(240,180,41,0.4);color:var(--yellow)}
+
 .hint{font-size:10px;color:var(--text3);margin-top:2px}
 .metric{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px}
 .metric .ml{font-size:10px;color:var(--text2);margin:0 0 6px;text-transform:uppercase;letter-spacing:0.08em}
@@ -57,8 +80,6 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-a
 .bd .tx td{color:var(--text3);font-size:12px}
 .bd .sub td{color:var(--text3);font-size:11px}
 .bd .cat td{font-size:10px;color:var(--accent);padding-top:12px;padding-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;border-bottom:none}
-.bd .aut td{color:var(--green)}
-.bd .efa td{color:var(--yellow)}
 .bar-track{height:5px;background:var(--surface);border-radius:999px;overflow:hidden;margin:10px 0 5px;border:1px solid var(--border)}
 .bar-fill{height:100%;border-radius:999px;transition:width 0.4s,background 0.4s}
 .bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
@@ -71,26 +92,25 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-a
 .toggle-row label{font-size:13px;color:var(--text2);cursor:pointer}
 input[type=checkbox]{accent-color:var(--accent);width:auto}
 
-/* Expense row with payment-type tags */
-.exp-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:10px}
-.exp-row:last-child{margin-bottom:0}
-.exp-row .field{flex:1}
-.pay-tags{display:flex;flex-direction:column;gap:3px;padding-bottom:1px}
-.pay-tag{display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap}
-.pay-tag input[type=checkbox]{accent-color:var(--green);width:12px;height:12px;margin:0;cursor:pointer}
-.pay-tag.efakt input[type=checkbox]{accent-color:var(--yellow)}
-.pay-tag span{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:0.04em;transition:color 0.15s}
-.pay-tag.checked-aut span{color:var(--green)}
-.pay-tag.checked-efa span{color:var(--yellow)}
+/* Payment summary chips */
+.pay-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.pay-chip{flex:1;min-width:100px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px}
+.pay-chip .pc-label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 4px}
+.pay-chip .pc-val{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.pay-chip.aut .pc-label{color:var(--green)}
+.pay-chip.aut .pc-val{color:var(--green)}
+.pay-chip.efa .pc-label{color:var(--yellow)}
+.pay-chip.efa .pc-val{color:var(--yellow)}
+.pay-chip.mat .pc-label{color:#38bdf8}
+.pay-chip.mat .pc-val{color:#38bdf8}
 
-/* tag pill on spec rows */
+/* tag pill */
 .tag-pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.05em;margin-left:6px;vertical-align:middle}
 .tag-aut{background:rgba(0,217,126,0.12);color:var(--green);border:1px solid rgba(0,217,126,0.25)}
 .tag-efa{background:rgba(240,180,41,0.12);color:var(--yellow);border:1px solid rgba(240,180,41,0.25)}
 
 /* Collapsible */
-.collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding-bottom:0}
-.collapsible-header.open{padding-bottom:1rem}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .collapsible-header .chevron{width:16px;height:16px;color:var(--text3);transition:transform 0.2s;flex-shrink:0}
 .collapsible-header.open .chevron{transform:rotate(180deg)}
 .collapsible-body{overflow:hidden;transition:max-height 0.35s ease}
@@ -106,19 +126,12 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .legend-pct{margin-left:auto;font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
 
-/* payment summary chips */
-.pay-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
-.pay-chip{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px}
-.pay-chip .pc-label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 4px}
-.pay-chip .pc-val{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
-.pay-chip.aut .pc-label{color:var(--green)}
-.pay-chip.aut .pc-val{color:var(--green)}
-.pay-chip.efa .pc-label{color:var(--yellow)}
-.pay-chip.efa .pc-val{color:var(--yellow)}
-.pay-chip.unk .pc-label{color:var(--text3)}
-.pay-chip.unk .pc-val{color:var(--text2)}
-
-@media(max-width:540px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.legend{grid-template-columns:1fr}.exp-row{flex-wrap:wrap}.pay-tags{flex-direction:row;gap:8px}}
+@media(max-width:480px){
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .legend{grid-template-columns:1fr}
+  .pay-summary{flex-direction:column}
+}
 </style>
 </head>
 <body>
@@ -219,27 +232,24 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <div class="pay-chip aut"><p class="pc-label">Autogiro</p><p class="pc-val" id="sum_aut">—</p></div>
       <div class="pay-chip efa"><p class="pc-label">E-faktura</p><p class="pc-val" id="sum_efa">—</p></div>
       <div class="pay-chip unk"><p class="pc-label">Ej kategoriserat</p><p class="pc-val" id="sum_unk">—</p></div>
+      <div class="pay-chip mat"><p class="pc-label">Mat</p><p class="pc-val" id="sum_mat">—</p></div>
     </div>
   </div>
 
-  <!-- Helper macro: each expense item is rendered via JS to avoid repeating the tag HTML -->
-  <!-- We build the budget cards dynamically from a data structure -->
   <div id="budget_cards"></div>
 
-  <!-- Specifikation — utfällbar -->
+  <!-- Specifikation -->
   <div class="card">
     <div class="collapsible-header" id="spec_toggle" onclick="toggleSpec()">
       <p class="card-title" style="margin:0;flex:1">Specifikation</p>
       <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
     </div>
     <div class="collapsible-body" id="spec_body" style="max-height:0">
-      <div style="padding-top:1rem">
-        <table class="bd" id="spec_table"></table>
-      </div>
+      <div style="padding-top:1rem"><table class="bd" id="spec_table"></table></div>
     </div>
   </div>
 
-  <!-- Cirkeldiagram -->
+  <!-- Diagram -->
   <div class="card">
     <p class="card-title">Utgifter per kategori</p>
     <div class="chart-wrap">
@@ -255,218 +265,152 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 </div>
 
 <script>
-// ─── Tax helpers ───────────────────────────────────────────────────
 const KOMMUNAL=0.3239,STATLIG=0.20,BPT=598500,RKA=958,RKF=1142;
 const fmt=n=>Math.round(n).toLocaleString('sv-SE')+' kr';
 const gv=id=>{const el=document.getElementById(id);return el?parseFloat(el.value)||0:0};
 function jsa(a){const p=57300;let j=0;if(a<=0.91*p)j=0;else if(a<=3.24*p)j=(a-0.91*p)*KOMMUNAL;else if(a<=8.08*p)j=2.12*p*KOMMUNAL;else if(a<=13.54*p)j=(2.12*p-(a-8.08*p)*0.03)*KOMMUNAL;else j=(2.12*p-5.46*p*0.03)*KOMMUNAL;return Math.max(0,j)}
 function arsskatt(a){return a*KOMMUNAL+(a>BPT?(a-BPT)*STATLIG:0)-jsa(a)}
 
-// ─── Category / item data ──────────────────────────────────────────
 const CATS=[
-  {id:'boende',  label:'Boende — Lundbergs',   color:'#3b9eff',
-   items:[{k:'hyra',     l:'Lägenhet',           def:12500},
-          {k:'garage',   l:'Garage',             def:650},
-          {k:'mcplats',  l:'MC-plats',           def:330},
-          {k:'boende_ovr',l:'Övrigt boende',     def:0}]},
-  {id:'forsakr', label:'Försäkringar',          color:'#a78bfa',
-   items:[{k:'trygghansa',l:'Trygg Hansa',       def:2500},
-          {k:'if',        l:'If Skadeförsäkring',def:185},
-          {k:'folksam1',  l:'Folksam försäkring',def:2500},
-          {k:'folksam2',  l:'Folksam pensionspar',def:500},
-          {k:'svedea',    l:'Svedea',            def:500},
-          {k:'forsakring_ovr',l:'Övrigt försäkringar',def:0}]},
-  {id:'eim',     label:'El, internet & mobil',  color:'#34d399',
-   items:[{k:'eon',    l:'E.ON',                 def:1200},
-          {k:'bahnhof',l:'Bahnhof',              def:550},
-          {k:'verbal', l:'Verbal (mobil)',        def:700},
-          {k:'eim_ovr',l:'Övrigt el/internet/mobil',def:0}]},
-  {id:'lan',     label:'Lån & kredit',          color:'#fb923c',
-   items:[{k:'santander',l:'Santander',          def:2900},
-          {k:'klarna',   l:'Klarna',             def:0},
-          {k:'ica',      l:'ICA lån',            def:2900},
-          {k:'lan_ovr',  l:'Övrigt lån/kredit',  def:0}]},
-  {id:'halsa',   label:'Kropp & hälsa',         color:'#f472b6',
-   items:[{k:'gym',       l:'Gym',               def:450},
-          {k:'synsam',    l:'Synsam / PayEx',    def:200},
-          {k:'tandlakare',l:'Tandläkare',         def:0},
-          {k:'apotek',    l:'Apotek',            def:0},
-          {k:'massage',   l:'Massage / Naprapat',def:0},
-          {k:'trkl',      l:'Träningskläder',    def:0},
-          {k:'halsa_ovr', l:'Övrigt kropp/hälsa',def:0}]},
-  {id:'fasta',   label:'Fasta kostnader',       color:'#facc15',
-   items:[{k:'unionen',  l:'Unionen (a-kassa)',  def:285},
-          {k:'transport',l:'Transportstyrelsen', def:20},
-          {k:'jasmine',  l:'Jasmine',            def:650},
-          {k:'manadspeng',l:'Månadspeng',        def:200},
-          {k:'staende1', l:'Stående överföring 1',def:200},
-          {k:'staende2', l:'Stående överföring 2',def:200},
-          {k:'fasta_ovr',l:'Övrigt fasta kostnader',def:0}]},
-  {id:'mat',     label:'Sparande & mat',        color:'#00d97e',
-   items:[{k:'sparande', l:'Sparande',           def:3000},
-          {k:'mat',      l:'Matkostnader',       def:5000},
-          {k:'ovrigt',   l:'Övrigt',             def:0}]},
+  {id:'boende', label:'Boende — Lundbergs',color:'#3b9eff',items:[
+    {k:'hyra',l:'Lägenhet',def:12500},{k:'garage',l:'Garage',def:650},
+    {k:'mcplats',l:'MC-plats',def:330},{k:'boende_ovr',l:'Övrigt boende',def:0}]},
+  {id:'forsakr',label:'Försäkringar',color:'#a78bfa',items:[
+    {k:'trygghansa',l:'Trygg Hansa',def:2500},{k:'if',l:'If Skadeförsäkring',def:185},
+    {k:'folksam1',l:'Folksam försäkring',def:2500},{k:'folksam2',l:'Folksam pensionspar',def:500},
+    {k:'svedea',l:'Svedea',def:500},{k:'forsakring_ovr',l:'Övrigt försäkringar',def:0}]},
+  {id:'eim',label:'El, internet & mobil',color:'#34d399',items:[
+    {k:'eon',l:'E.ON',def:1200},{k:'bahnhof',l:'Bahnhof',def:550},
+    {k:'verbal',l:'Verbal (mobil)',def:700},{k:'eim_ovr',l:'Övrigt el/internet/mobil',def:0}]},
+  {id:'lan',label:'Lån & kredit',color:'#fb923c',items:[
+    {k:'santander',l:'Santander',def:2900},{k:'klarna',l:'Klarna',def:0},
+    {k:'ica',l:'ICA lån',def:2900},{k:'lan_ovr',l:'Övrigt lån/kredit',def:0}]},
+  {id:'halsa',label:'Kropp & hälsa',color:'#f472b6',items:[
+    {k:'gym',l:'Gym',def:450},{k:'synsam',l:'Synsam / PayEx',def:200},
+    {k:'tandlakare',l:'Tandläkare',def:0},{k:'apotek',l:'Apotek',def:0},
+    {k:'massage',l:'Massage / Naprapat',def:0},{k:'trkl',l:'Träningskläder',def:0},
+    {k:'halsa_ovr',l:'Övrigt kropp/hälsa',def:0}]},
+  {id:'fasta',label:'Fasta kostnader',color:'#facc15',items:[
+    {k:'unionen',l:'Unionen (a-kassa)',def:285},{k:'transport',l:'Transportstyrelsen',def:20},
+    {k:'jasmine',l:'Jasmine',def:650},{k:'manadspeng',l:'Månadspeng',def:200},
+    {k:'staende1',l:'Stående överföring 1',def:200},{k:'staende2',l:'Stående överföring 2',def:200},
+    {k:'fasta_ovr',l:'Övrigt fasta kostnader',def:0}]},
+  {id:'sparande',label:'Sparande & övrigt',color:'#00d97e',items:[
+    {k:'sparande',l:'Sparande',def:3000},{k:'ovrigt',l:'Övrigt',def:0}]},
+  {id:'mat',label:'Mat',color:'#38bdf8',noPay:true,items:[
+    {k:'matvaror',l:'Matvaror',def:4000},{k:'restaurang',l:'Restaurang',def:1000}]},
 ];
-
 const ALL_ITEMS=CATS.flatMap(c=>c.items);
 const ALL_KEYS=ALL_ITEMS.map(i=>i.k);
+const payType={};ALL_KEYS.forEach(k=>payType[k]='');
 
-// payment type state: '' | 'aut' | 'efa'
-const payType={};
-ALL_KEYS.forEach(k=>payType[k]='');
-
-// ─── Build budget cards ────────────────────────────────────────────
+// ── Build budget cards ──────────────────────────────────────────────
 function buildBudgetCards(){
   const container=document.getElementById('budget_cards');
   CATS.forEach(cat=>{
     const card=document.createElement('div');card.className='card';
     const title=document.createElement('p');title.className='card-title';title.textContent=cat.label;
     card.appendChild(title);
-    // arrange items in pairs
-    for(let i=0;i<cat.items.length;i+=2){
-      const row=document.createElement('div');
-      row.className='exp-row'+(i+2<cat.items.length?' mb':'');
-      const pair=cat.items.slice(i,i+2);
-      // left item: tags on right
-      pair.forEach((item,idx)=>{
-        // left-side item: field first, tags after
-        // right-side item: tags first, field after — so tags are between fields
-        const isRight=(pair.length===2&&idx===1);
-        if(isRight){
-          // insert tag group for right item (appears between fields = left of right field)
-          row.appendChild(makeTagGroup(item.k,'right'));
-        }
-        const fieldWrap=document.createElement('div');fieldWrap.className='field';
-        const lbl=document.createElement('label');lbl.textContent=item.l;lbl.htmlFor='e_'+item.k;
-        const inp=document.createElement('input');
-        inp.type='number';inp.id='e_'+item.k;inp.value=item.def;inp.min=0;inp.step=1;
-        inp.addEventListener('input',()=>{calcLon();saveState()});
-        fieldWrap.appendChild(lbl);fieldWrap.appendChild(inp);
-        row.appendChild(fieldWrap);
-        if(!isRight){
-          row.appendChild(makeTagGroup(item.k,'left'));
-        }
-      });
-      card.appendChild(row);
-    }
+    const grid=document.createElement('div');grid.className='g2';
+    cat.items.forEach(item=>{
+      const field=makeField(item,cat.noPay);
+      grid.appendChild(field);
+    });
+    card.appendChild(grid);
     container.appendChild(card);
   });
 }
 
-function makeTagGroup(key,side){
-  const wrap=document.createElement('div');wrap.className='pay-tags';wrap.id='tags_'+key;
-  ['aut','efa'].forEach(type=>{
-    const tag=document.createElement('label');
-    tag.className='pay-tag '+(type==='efa'?'efakt':'');
-    tag.id='tag_'+key+'_'+type;
-    const cb=document.createElement('input');
-    cb.type='checkbox';cb.id='cb_'+key+'_'+type;
-    cb.addEventListener('change',()=>onTagChange(key,type,cb.checked));
-    const sp=document.createElement('span');
-    sp.textContent=type==='aut'?'Aut':'Efakt';
-    tag.appendChild(cb);tag.appendChild(sp);
-    wrap.appendChild(tag);
-  });
+function makeField(item,noPay){
+  const wrap=document.createElement('div');wrap.className='field';
+  const lbl=document.createElement('label');lbl.textContent=item.l;lbl.htmlFor='e_'+item.k;
+  const inp=document.createElement('input');
+  inp.type='number';inp.id='e_'+item.k;inp.value=item.def;inp.min=0;inp.step=1;
+  inp.addEventListener('input',()=>{calcLon();saveState()});
+  wrap.appendChild(lbl);wrap.appendChild(inp);
+  if(!noPay){
+    const btns=document.createElement('div');btns.className='pay-btns';
+    ['aut','efa'].forEach(type=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='pay-btn '+type;
+      btn.id='pbtn_'+item.k+'_'+type;
+      btn.textContent=type==='aut'?'Aut':'Efakt';
+      btn.addEventListener('click',()=>onPayClick(item.k,type));
+      btns.appendChild(btn);
+    });
+    wrap.appendChild(btns);
+  }
   return wrap;
 }
 
-function onTagChange(key,type,checked){
-  if(checked){
-    // deselect the other
-    const other=type==='aut'?'efa':'aut';
-    const otherCb=document.getElementById('cb_'+key+'_'+other);
-    if(otherCb)otherCb.checked=false;
-    document.getElementById('tag_'+key+'_'+other).className='pay-tag '+(other==='efa'?'efakt':'');
-    payType[key]=type;
-    document.getElementById('tag_'+key+'_'+type).className='pay-tag '+(type==='efa'?'efakt':'')+(type==='aut'?' checked-aut':' checked-efa');
-  } else {
+function onPayClick(key,type){
+  const other=type==='aut'?'efa':'aut';
+  if(payType[key]===type){
+    // deselect
     payType[key]='';
-    document.getElementById('tag_'+key+'_'+type).className='pay-tag '+(type==='efa'?'efakt':'');
+    document.getElementById('pbtn_'+key+'_'+type).className='pay-btn '+type;
+  } else {
+    payType[key]=type;
+    document.getElementById('pbtn_'+key+'_'+type).className='pay-btn '+type+' active';
+    document.getElementById('pbtn_'+key+'_'+other).className='pay-btn '+other;
   }
   saveState();calcBudget();
 }
 
-// ─── Spec table builder ─────────────────────────────────────────────
+// ── Spec table ──────────────────────────────────────────────────────
 function buildSpecTable(vals,netto,tot,kvar){
-  const tbl=document.getElementById('spec_table');
-  tbl.innerHTML='';
-  const row=(cls,lbl,amt,pill)=>{
+  const tbl=document.getElementById('spec_table');tbl.innerHTML='';
+  const addRow=(cls,lblHtml,amtHtml)=>{
     const tr=document.createElement('tr');if(cls)tr.className=cls;
-    const td1=document.createElement('td');td1.className='lbl';
-    td1.innerHTML=lbl+(pill?`<span class="tag-pill ${pill.cls}">${pill.txt}</span>`:'');
-    const td2=document.createElement('td');td2.className='amt';td2.textContent=amt;
-    tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);return tr;
+    const td1=document.createElement('td');td1.className='lbl';td1.innerHTML=lblHtml;
+    const td2=document.createElement('td');td2.className='amt';td2.innerHTML=amtHtml;
+    tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);
   };
-  row('','Nettolön','<span style="color:var(--green)">'+fmt(netto)+'</span>');
+  addRow('','Nettolön','<span style="color:var(--green)">'+fmt(netto)+'</span>');
   CATS.forEach(cat=>{
-    row('cat',cat.label,'');
+    addRow('cat',cat.label,'');
     cat.items.forEach(item=>{
       const v=vals[item.k]||0;
       const pt=payType[item.k];
-      let pill=null;
-      if(pt==='aut')pill={cls:'tag-aut',txt:'Aut'};
-      else if(pt==='efa')pill={cls:'tag-efa',txt:'Efakt'};
-      const td1txt='<span style="padding-left:10px">'+item.l+'</span>';
-      const tr=document.createElement('tr');
-      const td1=document.createElement('td');td1.className='lbl';
-      td1.innerHTML='<span style="padding-left:10px">'+item.l+'</span>'+(pill?`<span class="tag-pill ${pill.cls}">${pill.txt}</span>`:'');
-      const td2=document.createElement('td');td2.className='amt';td2.textContent=v>0?'−'+fmt(v):'—';
-      tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);
+      const pill=pt==='aut'?'<span class="tag-pill tag-aut">Aut</span>':pt==='efa'?'<span class="tag-pill tag-efa">Efakt</span>':'';
+      addRow('','<span style="padding-left:10px">'+item.l+'</span>'+pill, v>0?'−'+fmt(v):'—');
     });
   });
-  // payment type totals
-  const autTotal=ALL_KEYS.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
-  const efaTotal=ALL_KEYS.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
-  const unkTotal=ALL_KEYS.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
-  const sep=()=>{const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=2;td.style.cssText='padding:0;border-bottom:none';const d=document.createElement('div');d.style.cssText='height:1px;background:var(--border2);margin:10px 0 2px';td.appendChild(d);tr.appendChild(td);tbl.appendChild(tr)};
-  sep();
-  const sumRow=(cls,lbl,val,color)=>{
-    const tr=document.createElement('tr');tr.className='tr';
-    const td1=document.createElement('td');td1.className='lbl';td1.textContent=lbl;
-    const td2=document.createElement('td');td2.className='amt';td2.textContent='−'+fmt(val);if(color)td2.style.color=color;
-    tr.appendChild(td1);tr.appendChild(td2);tbl.appendChild(tr);
-  };
-  sumRow('','Autogiro totalt',autTotal,'var(--green)');
-  sumRow('','E-faktura totalt',efaTotal,'var(--yellow)');
-  sumRow('','Ej kategoriserat',unkTotal,'var(--text2)');
-  const trTot=document.createElement('tr');trTot.className='tr';
-  const tt1=document.createElement('td');tt1.className='lbl';tt1.textContent='Totala utgifter';
-  const tt2=document.createElement('td');tt2.className='amt';tt2.textContent='−'+fmt(tot);
-  trTot.appendChild(tt1);trTot.appendChild(tt2);tbl.appendChild(trTot);
-  const trKvar=document.createElement('tr');trKvar.className='tr';
-  const tk1=document.createElement('td');tk1.className='lbl';tk1.textContent=kvar<0?'Underskott':'Kvar att disponera';
-  const tk2=document.createElement('td');tk2.className='amt';tk2.textContent=fmt(kvar);
-  tk2.style.color=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
-  trKvar.appendChild(tk1);trKvar.appendChild(tk2);tbl.appendChild(trKvar);
+  // divider
+  const dtr=document.createElement('tr');const dtd=document.createElement('td');dtd.colSpan=2;
+  dtd.innerHTML='<div style="height:1px;background:var(--border2);margin:10px 0 4px"></div>';
+  dtr.appendChild(dtd);tbl.appendChild(dtr);
+  const MAT_KEYS_S=CATS.find(c=>c.id==='mat').items.map(i=>i.k);
+  const nmk=ALL_KEYS.filter(k=>!MAT_KEYS_S.includes(k));
+  const autSum=nmk.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
+  const efaSum=nmk.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
+  const unkSum=nmk.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
+  const matSum=MAT_KEYS_S.reduce((s,k)=>s+(vals[k]||0),0);
+  addRow('tr','Autogiro totalt','<span style="color:var(--green)">−'+fmt(autSum)+'</span>');
+  addRow('tr','E-faktura totalt','<span style="color:var(--yellow)">−'+fmt(efaSum)+'</span>');
+  addRow('tr','Ej kategoriserat','−'+fmt(unkSum));
+  addRow('tr','Mat totalt','<span style="color:#38bdf8">−'+fmt(matSum)+'</span>');
+  addRow('tr','Totala utgifter','−'+fmt(tot));
+  const kvarColor=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
+  addRow('tr',kvar<0?'Underskott':'Kvar att disponera','<span style="color:'+kvarColor+'">'+fmt(kvar)+'</span>');
 }
 
-// ─── Pie ──────────────────────────────────────────────────────────
-function drawPie(catTotals,grandTotal){
+// ── Pie ─────────────────────────────────────────────────────────────
+function drawPie(catTotals,grand){
   const canvas=document.getElementById('pie_canvas');
   const ctx=canvas.getContext('2d');
   const cx=110,cy=110,R=100,inner=62;
   ctx.clearRect(0,0,220,220);
-  if(grandTotal<=0){ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle='#1a2332';ctx.fill();ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();return}
-  let start=-Math.PI/2;
-  catTotals.forEach(({color,val})=>{
-    if(val<=0)return;
-    const slice=(val/grandTotal)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,start,start+slice);ctx.closePath();ctx.fillStyle=color;ctx.fill();
-    start+=slice;
-  });
+  if(grand<=0){ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle='#1a2332';ctx.fill();ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();return}
+  let s=-Math.PI/2;
+  catTotals.forEach(({color,val})=>{if(val<=0)return;const sl=val/grand*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,s+sl);ctx.closePath();ctx.fillStyle=color;ctx.fill();s+=sl});
   ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();
-  start=-Math.PI/2;
-  catTotals.forEach(({val})=>{
-    if(val<=0)return;
-    const slice=(val/grandTotal)*Math.PI*2;
-    ctx.beginPath();ctx.moveTo(cx+inner*Math.cos(start),cy+inner*Math.sin(start));
-    ctx.lineTo(cx+R*Math.cos(start),cy+R*Math.sin(start));
-    ctx.strokeStyle='#0d1117';ctx.lineWidth=1.5;ctx.stroke();
-    start+=slice;
-  });
+  s=-Math.PI/2;
+  catTotals.forEach(({val})=>{if(val<=0)return;const sl=val/grand*Math.PI*2;ctx.beginPath();ctx.moveTo(cx+inner*Math.cos(s),cy+inner*Math.sin(s));ctx.lineTo(cx+R*Math.cos(s),cy+R*Math.sin(s));ctx.strokeStyle='#0d1117';ctx.lineWidth=1.5;ctx.stroke();s+=sl});
 }
 
-// ─── Main calc ────────────────────────────────────────────────────
+// ── Calc ─────────────────────────────────────────────────────────────
 let cNetto=0,saveTimer=null,specOpen=false;
 
 function calcLon(){
@@ -508,9 +452,7 @@ function calcLon(){
 }
 
 function calcBudget(){
-  const n=cNetto;
-  const vals={};
-  let tot=0;
+  const n=cNetto;const vals={};let tot=0;
   ALL_ITEMS.forEach(i=>{vals[i.k]=gv('e_'+i.k);tot+=vals[i.k]});
   const kvar=n-tot,pct=n>0?Math.min(tot/n*100,100):0;
   document.getElementById('bud_netto_in').textContent=fmt(n);
@@ -523,17 +465,18 @@ function calcBudget(){
   bar.style.width=pct+'%';
   bar.style.background=pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
   document.getElementById('bud_bar_label').textContent=Math.round(pct)+'% av netto går till utgifter';
-  // payment type sums
-  const autSum=ALL_KEYS.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
-  const efaSum=ALL_KEYS.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
-  const unkSum=ALL_KEYS.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
+  const MAT_KEYS=CATS.find(c=>c.id==='mat').items.map(i=>i.k);
+  const nonMatKeys=ALL_KEYS.filter(k=>!MAT_KEYS.includes(k));
+  const autSum=nonMatKeys.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
+  const efaSum=nonMatKeys.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
+  const unkSum=nonMatKeys.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
+  const matSum=MAT_KEYS.reduce((s,k)=>s+(vals[k]||0),0);
   document.getElementById('sum_aut').textContent=fmt(autSum);
   document.getElementById('sum_efa').textContent=fmt(efaSum);
   document.getElementById('sum_unk').textContent=fmt(unkSum);
-  // spec
+  document.getElementById('sum_mat').textContent=fmt(matSum);
   buildSpecTable(vals,n,tot,kvar);
   if(specOpen){const body=document.getElementById('spec_body');body.style.maxHeight=body.scrollHeight+'px'}
-  // pie
   const catTotals=CATS.map(c=>({label:c.label,color:c.color,val:c.items.reduce((s,i)=>s+(vals[i.k]||0),0)}));
   document.getElementById('pie_total').textContent=fmt(tot);
   drawPie(catTotals,tot);
@@ -547,12 +490,10 @@ function calcBudget(){
   });
 }
 
-// ─── Persistence ─────────────────────────────────────────────────
-const SAVE_KEY='lonkalkyl_v4';
-
+// ── Persist ──────────────────────────────────────────────────────────
+const SAVE_KEY='lonkalkyl_v7';
 function saveState(){
-  const data={payType:{...payType}};
-  // lon inputs
+  const data={pt:{...payType}};
   ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     data[id]=el.type==='checkbox'?el.checked:el.value;
@@ -566,7 +507,6 @@ function saveState(){
     saveTimer=setTimeout(()=>{dot.classList.remove('saved');st.textContent='Autospar aktivt';},2000);
   }catch(e){}
 }
-
 function loadState(){
   try{
     const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
@@ -576,14 +516,14 @@ function loadState(){
       if(el.type==='checkbox')el.checked=data[id];else el.value=data[id];
     });
     ALL_KEYS.forEach(k=>{const el=document.getElementById('e_'+k);if(el&&('e_'+k) in data)el.value=data['e_'+k]});
-    if(data.payType){
-      Object.keys(data.payType).forEach(k=>{
+    if(data.pt){
+      Object.keys(data.pt).forEach(k=>{
         if(!(k in payType))return;
-        const pt=data.payType[k];
-        payType[k]=pt;
+        const pt=data.pt[k];payType[k]=pt;
         if(pt==='aut'||pt==='efa'){
-          const cb=document.getElementById('cb_'+k+'_'+pt);
-          if(cb){cb.checked=true;document.getElementById('tag_'+k+'_'+pt).className='pay-tag '+(pt==='efa'?'efakt':'')+(pt==='aut'?' checked-aut':' checked-efa')}
+          const other=pt==='aut'?'efa':'aut';
+          const btn=document.getElementById('pbtn_'+k+'_'+pt);
+          if(btn)btn.className='pay-btn '+pt+' active';
         }
       });
     }
@@ -599,17 +539,14 @@ function toggleSpec(){
   if(specOpen){body.style.maxHeight=body.scrollHeight+'px';hdr.classList.add('open')}
   else{body.style.maxHeight='0';hdr.classList.remove('open')}
 }
-
 function showTab(t){
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.pane').forEach(el=>el.classList.remove('active'));
   document.querySelector('[onclick="showTab(\''+t+'\')"]').classList.add('active');
   document.getElementById('pane-'+t).classList.add('active');
 }
-
 function setPreset(){document.getElementById('b_vardag').value=67;document.getElementById('b_helg').value=61;calcLon();saveState()}
 
-// ─── Init ─────────────────────────────────────────────────────────
 buildBudgetCards();
 loadState();
 calcLon();
