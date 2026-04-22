@@ -223,11 +223,16 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
     <p class="card-title">Månadsöversikt</p>
     <div class="g3" style="margin-bottom:1rem">
       <div class="metric"><p class="ml">Nettolön</p><p class="mv" id="bud_netto_in">—</p><p class="ms">från lönekalkyl</p></div>
-      <div class="metric"><p class="ml">Totala utgifter</p><p class="mv" id="bud_utgifter">—</p><p class="ms">alla poster</p></div>
+      <div class="metric"><p class="ml">Utgifter (ex. mat)</p><p class="mv" id="bud_utgifter">—</p><p class="ms" id="bud_utgifter_sub">—</p></div>
       <div class="metric" id="bud_kvar_card"><p class="ml">Kvar att disponera</p><p class="mv" id="bud_kvar">—</p><p class="ms" id="bud_kvar_pct">—</p></div>
     </div>
     <div class="bar-track"><div class="bar-fill" id="bud_bar" style="width:0%"></div></div>
     <div class="bar-labels"><span>0 kr</span><span id="bud_bar_label">—</span></div>
+    <div class="divider"></div>
+    <div class="g2" style="gap:10px">
+      <div class="metric"><p class="ml">Utgifter + mat</p><p class="mv" id="bud_tot_inkl_mat">—</p><p class="ms">alla poster</p></div>
+      <div class="metric" id="bud_kvar_mat_card"><p class="ml">Att disponera efter mat</p><p class="mv" id="bud_kvar_mat">—</p><p class="ms" id="bud_kvar_mat_pct">—</p></div>
+    </div>
     <div class="pay-summary">
       <div class="pay-chip aut"><p class="pc-label">Autogiro</p><p class="pc-val" id="sum_aut">—</p></div>
       <div class="pay-chip efa"><p class="pc-label">E-faktura</p><p class="pc-val" id="sum_efa">—</p></div>
@@ -359,7 +364,7 @@ function onPayClick(key,type){
 }
 
 // ── Spec table ──────────────────────────────────────────────────────
-function buildSpecTable(vals,netto,tot,kvar){
+function buildSpecTable(vals,netto,totExMat,totInklMat,kvar,kvarEfterMat){
   const tbl=document.getElementById('spec_table');tbl.innerHTML='';
   const addRow=(cls,lblHtml,amtHtml)=>{
     const tr=document.createElement('tr');if(cls)tr.className=cls;
@@ -391,9 +396,12 @@ function buildSpecTable(vals,netto,tot,kvar){
   addRow('tr','E-faktura totalt','<span style="color:var(--yellow)">−'+fmt(efaSum)+'</span>');
   addRow('tr','Ej kategoriserat','−'+fmt(unkSum));
   addRow('tr','Mat totalt','<span style="color:#38bdf8">−'+fmt(matSum)+'</span>');
-  addRow('tr','Totala utgifter','−'+fmt(tot));
+  addRow('tr','Utgifter (ex. mat)','−'+fmt(totExMat));
   const kvarColor=kvar<0?'var(--red)':kvar<5000?'var(--yellow)':'var(--green)';
-  addRow('tr',kvar<0?'Underskott':'Kvar att disponera','<span style="color:'+kvarColor+'">'+fmt(kvar)+'</span>');
+  addRow('tr','Kvar att disponera','<span style="color:'+kvarColor+'">'+fmt(kvar)+'</span>');
+  addRow('tr','Utgifter inkl. mat','−'+fmt(totInklMat));
+  const kemColor=kvarEfterMat<0?'var(--red)':kvarEfterMat<3000?'var(--yellow)':'var(--green)';
+  addRow('tr','Att disponera efter mat','<span style="color:'+kemColor+'">'+fmt(kvarEfterMat)+'</span>');
 }
 
 // ── Pie ─────────────────────────────────────────────────────────────
@@ -452,11 +460,19 @@ function calcLon(){
 }
 
 function calcBudget(){
-  const n=cNetto;const vals={};let tot=0;
-  ALL_ITEMS.forEach(i=>{vals[i.k]=gv('e_'+i.k);tot+=vals[i.k]});
-  const kvar=n-tot,pct=n>0?Math.min(tot/n*100,100):0;
+  const n=cNetto;const vals={};
+  ALL_ITEMS.forEach(i=>{vals[i.k]=gv('e_'+i.k)});
+  const MAT_KEYS=CATS.find(c=>c.id==='mat').items.map(i=>i.k);
+  const matSum=MAT_KEYS.reduce((s,k)=>s+(vals[k]||0),0);
+  const totExMat=ALL_ITEMS.filter(i=>!MAT_KEYS.includes(i.k)).reduce((s,i)=>s+(vals[i.k]||0),0);
+  const totInklMat=totExMat+matSum;
+  const kvar=n-totExMat;
+  const kvarEfterMat=n-totInklMat;
+  const pct=n>0?Math.min(totExMat/n*100,100):0;
+
   document.getElementById('bud_netto_in').textContent=fmt(n);
-  document.getElementById('bud_utgifter').textContent=fmt(tot);
+  document.getElementById('bud_utgifter').textContent=fmt(totExMat);
+  document.getElementById('bud_utgifter_sub').textContent='exkl. mat';
   document.getElementById('bud_kvar').textContent=fmt(kvar);
   document.getElementById('bud_kvar_pct').textContent=(n>0?(kvar/n*100).toFixed(1):'0')+'% av netto';
   const card=document.getElementById('bud_kvar_card');
@@ -464,26 +480,31 @@ function calcBudget(){
   const bar=document.getElementById('bud_bar');
   bar.style.width=pct+'%';
   bar.style.background=pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
-  document.getElementById('bud_bar_label').textContent=Math.round(pct)+'% av netto går till utgifter';
-  const MAT_KEYS=CATS.find(c=>c.id==='mat').items.map(i=>i.k);
+  document.getElementById('bud_bar_label').textContent=Math.round(pct)+'% av netto går till utgifter (ex. mat)';
+
+  document.getElementById('bud_tot_inkl_mat').textContent=fmt(totInklMat);
+  document.getElementById('bud_kvar_mat').textContent=fmt(kvarEfterMat);
+  document.getElementById('bud_kvar_mat_pct').textContent=(n>0?(kvarEfterMat/n*100).toFixed(1):'0')+'% av netto';
+  const matCard=document.getElementById('bud_kvar_mat_card');
+  matCard.className='metric'+(kvarEfterMat<0?' bad':kvarEfterMat<3000?' warn':' good');
+
   const nonMatKeys=ALL_KEYS.filter(k=>!MAT_KEYS.includes(k));
   const autSum=nonMatKeys.filter(k=>payType[k]==='aut').reduce((s,k)=>s+(vals[k]||0),0);
   const efaSum=nonMatKeys.filter(k=>payType[k]==='efa').reduce((s,k)=>s+(vals[k]||0),0);
   const unkSum=nonMatKeys.filter(k=>payType[k]==='').reduce((s,k)=>s+(vals[k]||0),0);
-  const matSum=MAT_KEYS.reduce((s,k)=>s+(vals[k]||0),0);
   document.getElementById('sum_aut').textContent=fmt(autSum);
   document.getElementById('sum_efa').textContent=fmt(efaSum);
   document.getElementById('sum_unk').textContent=fmt(unkSum);
   document.getElementById('sum_mat').textContent=fmt(matSum);
-  buildSpecTable(vals,n,tot,kvar);
+  buildSpecTable(vals,n,totExMat,totInklMat,kvar,kvarEfterMat);
   if(specOpen){const body=document.getElementById('spec_body');body.style.maxHeight=body.scrollHeight+'px'}
   const catTotals=CATS.map(c=>({label:c.label,color:c.color,val:c.items.reduce((s,i)=>s+(vals[i.k]||0),0)}));
-  document.getElementById('pie_total').textContent=fmt(tot);
-  drawPie(catTotals,tot);
+  document.getElementById('pie_total').textContent=fmt(totInklMat);
+  drawPie(catTotals,totInklMat);
   const leg=document.getElementById('pie_legend');leg.innerHTML='';
   catTotals.forEach(({label,color,val})=>{
     if(val<=0)return;
-    const pct=tot>0?(val/tot*100).toFixed(1):'0';
+    const pct=totInklMat>0?(val/totInklMat*100).toFixed(1):'0';
     const item=document.createElement('div');item.className='legend-item';
     item.innerHTML=`<span class="legend-dot" style="background:${color}"></span><span>${label}</span><span class="legend-pct">${pct}%</span>`;
     leg.appendChild(item);
@@ -491,7 +512,7 @@ function calcBudget(){
 }
 
 // ── Persist ──────────────────────────────────────────────────────────
-const SAVE_KEY='lonkalkyl_v7';
+const SAVE_KEY='lonkalkyl_v8';
 function saveState(){
   const data={pt:{...payType}};
   ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
