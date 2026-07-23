@@ -154,9 +154,10 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 <div id="pane-lon" class="pane active">
   <div class="card">
     <p class="card-title">Grundlön</p>
-    <div class="g2">
+    <div class="g3">
       <div class="field"><label>Månadslön (kr)</label><input type="number" id="grundlon" value="52000" min="0" step="100"></div>
       <div class="field"><label>Bonus (% av årsgrundlön)</label><input type="number" id="bonus_pct" value="0" min="0" step="0.5"><p class="hint">Beskattas som ackumulerad inkomst</p></div>
+      <div class="field"><label>Semesterdagar uttagna</label><input type="number" id="semester_dagar" value="0" min="0" step="1"><p class="hint">0,8% × grundlön × dagar</p></div>
     </div>
   </div>
   <div class="card">
@@ -171,8 +172,11 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
     <p class="card-title">Beredskap</p>
     <button class="preset-btn" onclick="setPreset()">Normal beredskapsvecka — 67h vardag + 61h helg</button>
     <div class="g2">
-      <div class="field"><label>Vardag (timmar)</label><input type="number" id="b_vardag" value="0" min="0" step="0.5"><p class="hint">Divisor 1325</p></div>
-      <div class="field"><label>Helg (timmar)</label><input type="number" id="b_helg" value="0" min="0" step="0.5"><p class="hint">Divisor 600</p></div>
+      <div class="field"><label>Vardag (timmar)</label><input type="number" id="b_vardag" value="0" min="0" step="0.5"><p class="hint">Divisor 1400</p></div>
+      <div class="field"><label>Helg (timmar)</label><input type="number" id="b_helg" value="0" min="0" step="0.5"><p class="hint">Divisor 700</p></div>
+    </div>
+    <div class="g2" style="margin-top:10px">
+      <div class="field"><label>Storhelgsberedskap (timmar)</label><input type="number" id="b_storhelg" value="0" min="0" step="0.5"><p class="hint">Divisor 350</p></div>
     </div>
   </div>
   <div class="card">
@@ -198,11 +202,12 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <tr><td class="lbl">Grundlön</td><td class="amt" id="b_grundlon">—</td></tr>
       <tr><td class="lbl">Beredskap vardag</td><td class="amt" id="b_bv">—</td></tr>
       <tr><td class="lbl">Beredskap helg</td><td class="amt" id="b_bh">—</td></tr>
+      <tr><td class="lbl">Beredskap storhelg</td><td class="amt" id="b_bsh">—</td></tr>
       <tr><td class="lbl">Övertid vardag</td><td class="amt" id="b_otv">—</td></tr>
       <tr><td class="lbl">Övertid kväll</td><td class="amt" id="b_otk">—</td></tr>
       <tr><td class="lbl">Övertid helg</td><td class="amt" id="b_oth">—</td></tr>
       <tr><td class="lbl">Övertid storhelg</td><td class="amt" id="b_ots">—</td></tr>
-      <tr id="rk_avdrag_row"><td class="lbl">Rikskort löneavdrag</td><td class="amt" id="b_rk_avdrag">—</td></tr>
+      <tr id="sem_row" style="display:none"><td class="lbl">Semesterersättning</td><td class="amt" id="b_sem">—</td></tr>
       <tr class="tr"><td class="lbl">Månadsbrutto (ex. bonus)</td><td class="amt" id="b_manad_brutto">—</td></tr>
       <tr class="sub" id="rk_forman_row"><td class="lbl" style="padding-left:12px">+ rikskort förmånsvärde</td><td class="amt" id="b_rk_forman">—</td></tr>
       <tr class="tx"><td class="lbl">Kommunalskatt 32,39 %</td><td class="amt" id="b_kommunskatt">—</td></tr>
@@ -211,6 +216,7 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
       <tr id="bb1" style="display:none"><td class="lbl" style="padding-top:12px;border-top:1px solid var(--border)">Bonus (engångsbelopp)</td><td class="amt" id="b_bonus_belopp" style="padding-top:12px;border-top:1px solid var(--border)">—</td></tr>
       <tr id="bb2" class="tx" style="display:none"><td class="lbl">Skatt på bonus (ackumulerad)</td><td class="amt" id="b_bonus_skatt">—</td></tr>
       <tr id="bb3" class="sub" style="display:none"><td class="lbl" style="padding-left:12px">Marginalskattesats på bonus</td><td class="amt" id="b_bonus_rate">—</td></tr>
+      <tr id="rk_avdrag_row" class="tx"><td class="lbl">Rikskort nettolöneavdrag</td><td class="amt" id="b_rk_avdrag">—</td></tr>
       <tr class="tr"><td class="lbl">Netto att ta hem</td><td class="amt" id="b_netto_lon" style="color:var(--green)">—</td></tr>
     </table>
   </div>
@@ -270,11 +276,38 @@ input[type=checkbox]{accent-color:var(--accent);width:auto}
 </div>
 
 <script>
-const KOMMUNAL=0.3239,STATLIG=0.20,BPT=598500,RKA=958,RKF=1142;
+// 2026 tax parameters
+const KOMMUNAL=0.3239,STATLIG=0.20,BPT=625800,RKA=958,RKF=1142;
+const PBB=58800; // prisbasbelopp 2026
+const GRUNDAVDRAG_MIN=15600; // grundavdrag minimum 2026 (höginkomst)
+
 const fmt=n=>Math.round(n).toLocaleString('sv-SE')+' kr';
 const gv=id=>{const el=document.getElementById(id);return el?parseFloat(el.value)||0:0};
-function jsa(a){const p=57300;let j=0;if(a<=0.91*p)j=0;else if(a<=3.24*p)j=(a-0.91*p)*KOMMUNAL;else if(a<=8.08*p)j=2.12*p*KOMMUNAL;else if(a<=13.54*p)j=(2.12*p-(a-8.08*p)*0.03)*KOMMUNAL;else j=(2.12*p-5.46*p*0.03)*KOMMUNAL;return Math.max(0,j)}
-function arsskatt(a){return a*KOMMUNAL+(a>BPT?(a-BPT)*STATLIG:0)-jsa(a)}
+
+function grundavdrag(ars){
+  // Grundavdrag 2026 — minskar vid hög inkomst, minimum 15600
+  if(ars<=0.99*PBB) return 0.423*ars;
+  else if(ars<=2.72*PBB) return 0.423*0.99*PBB+0.20*(ars-0.99*PBB);
+  else if(ars<=3.11*PBB) return 0.423*0.99*PBB+0.20*(2.72-0.99)*PBB;
+  else if(ars<=7.88*PBB) return 0.423*0.99*PBB+0.20*(2.72-0.99)*PBB-0.02*(ars-3.11*PBB);
+  else return GRUNDAVDRAG_MIN;
+}
+
+function jsa(ars){
+  // JSA 2026 — koefficient 2.297 (uppdaterad från 2.12 i tidigare år)
+  const p=PBB,c=2.297,po=0.03;
+  if(ars<=0.91*p) return 0;
+  else if(ars<=3.24*p) return (ars-0.91*p)*KOMMUNAL;
+  else if(ars<=8.08*p) return c*p*KOMMUNAL;
+  else if(ars<=13.54*p) return (c*p-(ars-8.08*p)*po)*KOMMUNAL;
+  else return Math.max(0,(c*p-5.46*p*po)*KOMMUNAL);
+}
+
+function arsskatt(ars){
+  const gda=grundavdrag(ars);
+  const statlig=ars>BPT?(ars-BPT)*STATLIG:0;
+  return (ars-gda)*KOMMUNAL+statlig-jsa(ars);
+}
 
 const CATS=[
   {id:'boende', label:'Boende — Lundbergs',color:'#3b9eff',items:[
@@ -422,18 +455,19 @@ function drawPie(catTotals,grand){
 let cNetto=0,saveTimer=null,specOpen=false;
 
 function calcLon(){
-  const g=gv('grundlon'),bp=gv('bonus_pct');
-  const bv=(g/1325)*gv('b_vardag'),bh=(g/600)*gv('b_helg');
+  const g=gv('grundlon'),bp=gv('bonus_pct'),semDagar=gv('semester_dagar');
+  const semErs=g*0.008*semDagar;
+  const bv=(g/1400)*gv('b_vardag'),bh=(g/700)*gv('b_helg'),bsh=(g/350)*gv('b_storhelg');
   const ov=(g/95)*gv('ot_vardag'),ok=(g/85)*gv('ot_kvall'),oh=(g/70)*gv('ot_helg'),os=(g/48)*gv('ot_storhelg');
   const rk=document.getElementById('rikskort').checked;
   const rka=rk?RKA:0,rkf=rk?RKF:0;
-  const mk=g+bv+bh+ov+ok+oh+os-rka,mb=mk+rkf,arm=mb*12;
+  const mk=g+bv+bh+bsh+ov+ok+oh+os+semErs,mb=mk+rkf,arm=mb*12;
   const skm_ar=arsskatt(arm),skm=skm_ar/12;
   const jsam=jsa(arm)/12,komm=arm*KOMMUNAL/12,stat=arm>BPT?(arm-BPT)*STATLIG/12:0;
   const bonus=g*12*(bp/100);
   let skb=0,brate=0;
   if(bonus>0){skb=arsskatt(arm+bonus)-skm_ar;brate=skb/bonus*100}
-  const brutto=mk+bonus,tsk=skm+skb,netto=brutto-tsk;
+  const brutto=mk+bonus,tsk=skm+skb,netto=brutto-tsk-rka;
   cNetto=netto;
   const eff=brutto>0?tsk/(mb+bonus)*100:0;
   document.getElementById('res_brutto').textContent=fmt(brutto);
@@ -442,7 +476,12 @@ function calcLon(){
   document.getElementById('res_netto').textContent=fmt(netto);
   document.getElementById('b_grundlon').textContent=fmt(g);
   const opt=(id,v)=>document.getElementById(id).textContent=v>0?fmt(v):'—';
-  opt('b_bv',bv);opt('b_bh',bh);opt('b_otv',ov);opt('b_otk',ok);opt('b_oth',oh);opt('b_ots',os);
+  opt('b_bv',bv);opt('b_bh',bh);opt('b_bsh',bsh);opt('b_otv',ov);opt('b_otk',ok);opt('b_oth',oh);opt('b_ots',os);
+  // semester row — show/hide
+  const semRow=document.getElementById('sem_row');
+  if(semRow)semRow.style.display=semErs>0?'':'none';
+  const semEl=document.getElementById('b_sem');
+  if(semEl)semEl.textContent=semErs>0?fmt(semErs):'—';
   document.getElementById('b_rk_avdrag').textContent=rk?'−'+fmt(rka):'—';
   document.getElementById('b_manad_brutto').textContent=fmt(mk);
   document.getElementById('b_rk_forman').textContent=rk?'+'+fmt(rkf):'—';
@@ -512,10 +551,10 @@ function calcBudget(){
 }
 
 // ── Persist ──────────────────────────────────────────────────────────
-const SAVE_KEY='lonkalkyl_v8';
+const SAVE_KEY='lonkalkyl_v12';
 function saveState(){
   const data={pt:{...payType}};
-  ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+  ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg','semester_dagar','b_storhelg'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     data[id]=el.type==='checkbox'?el.checked:el.value;
   });
@@ -532,7 +571,7 @@ function loadState(){
   try{
     const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
     const data=JSON.parse(raw);
-    ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+    ['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg','semester_dagar','b_storhelg'].forEach(id=>{
       const el=document.getElementById(id);if(!el||!(id in data))return;
       if(el.type==='checkbox')el.checked=data[id];else el.value=data[id];
     });
@@ -570,7 +609,7 @@ function setPreset(){document.getElementById('b_vardag').value=67;document.getEl
 
 buildBudgetCards();
 // Attach listeners to all static inputs in the lon pane
-['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg'].forEach(id=>{
+['grundlon','bonus_pct','rikskort','b_vardag','b_helg','ot_vardag','ot_kvall','ot_helg','ot_storhelg','semester_dagar','b_storhelg'].forEach(id=>{
   const el=document.getElementById(id);
   if(!el)return;
   el.addEventListener(el.type==='checkbox'?'change':'input',()=>{calcLon();saveState()});
